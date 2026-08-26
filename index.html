@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Programme Tracker — Sri Lanka</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+<style>
+  :root{
+    --ink:#1c2b2d;
+    --paper:#f7f5f0;
+    --panel:#ffffff;
+    --line:#e2ded3;
+    --muted:#6b7573;
+    --red:#d64550;
+    --amber:#e2963c;
+    --green:#2f9e6e;
+    --accent:#1c6e5e;
+    --shadow:0 2px 10px rgba(28,43,45,0.08);
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+  }
+  header{
+    padding:14px 20px;
+    background:var(--panel);
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  header h1{
+    font-size:17px;
+    margin:0;
+    letter-spacing:.2px;
+  }
+  header h1 span{
+    display:block;
+    font-size:11.5px;
+    font-weight:400;
+    color:var(--muted);
+    margin-top:2px;
+    letter-spacing:.3px;
+  }
+  .counts{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .count-pill{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:12.5px;
+    padding:5px 10px;
+    border-radius:999px;
+    background:var(--paper);
+    border:1px solid var(--line);
+  }
+  .dot{width:9px;height:9px;border-radius:50%;flex:none;}
+  .app{
+    display:flex;
+    flex:1;
+    min-height:0;
+  }
+  #sidebar{
+    width:340px;
+    flex:none;
+    background:var(--panel);
+    border-right:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .sb-section{
+    padding:14px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .sb-section h2{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.6px;
+    color:var(--muted);
+    margin:0 0 10px 0;
+  }
+  #search{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-size:13px;
+    background:var(--paper);
+  }
+  .filter-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:6px 4px;
+    font-size:13px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .filter-row:hover{background:var(--paper);}
+  .filter-left{display:flex;align-items:center;gap:8px;}
+  .filter-count{color:var(--muted);font-size:12px;}
+  #list{
+    flex:1;
+    overflow-y:auto;
+    padding:6px 10px 14px;
+  }
+  .school-item{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    padding:8px 8px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:12.8px;
+    line-height:1.35;
+  }
+  .school-item:hover{background:var(--paper);}
+  .school-item .dot{margin-top:4px;}
+  .school-item .meta{color:var(--muted);font-size:11px;}
+  .school-item .del{
+    margin-left:auto;
+    color:var(--muted);
+    border:none;
+    background:none;
+    cursor:pointer;
+    font-size:14px;
+    padding:0 4px;
+    flex:none;
+  }
+  .school-item .del:hover{color:var(--red);}
+  #map{flex:1;}
+  .leaflet-popup-content{font-size:13px;}
+  .leaflet-popup-content b{font-size:14px;}
+  .stage-tag{
+    display:inline-block;
+    font-size:10.5px;
+    padding:2px 7px;
+    border-radius:999px;
+    color:white;
+    margin-top:4px;
+  }
+  .tools{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .btn{
+    font-size:12px;
+    padding:6px 10px;
+    border-radius:7px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .btn:hover{border-color:var(--accent);color:var(--accent);}
+  .btn.primary{
+    background:var(--accent);
+    color:white;
+    border-color:var(--accent);
+  }
+  .btn.primary:hover{opacity:.9;color:white;}
+  input[type=file]{display:none;}
+  form#addForm{display:flex;flex-direction:column;gap:6px;}
+  form#addForm input, form#addForm select{
+    font-size:12.5px;
+    padding:6px 8px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:var(--paper);
+  }
+  .row2{display:flex;gap:6px;}
+  .row2 input{width:50%;}
+  .hint{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
+  #toast{
+    position:fixed;
+    bottom:16px;
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--ink);
+    color:white;
+    padding:8px 16px;
+    border-radius:8px;
+    font-size:12.5px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s;
+    z-index:9999;
+  }
+  #toast.show{opacity:1;}
+  @media (max-width: 760px){
+    #sidebar{position:absolute;z-index:1000;height:calc(100% - 56px);width:88%;transform:translateX(-100%);transition:transform .2s;}
+    #sidebar.open{transform:translateX(0);}
+    .app{position:relative;}
+    #menuBtn{display:inline-block !important;}
+  }
+  #menuBtn{display:none;}
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="btn" id="menuBtn">☰</button>
+    <h1>School Programme Tracker <span>Sri Lanka — Teacher Training rollout</span></h1>
+  </div>
+  <div class="counts" id="counts"></div>
+</header>
+
+<div class="app">
+  <div id="sidebar">
+    <div class="sb-section">
+      <h2>Search</h2>
+      <input id="search" type="text" placeholder="Find a school by name…" />
+    </div>
+
+    <div class="sb-section">
+      <h2>Stages (click to toggle)</h2>
+      <div id="filters"></div>
+    </div>
+
+    <div class="sb-section">
+      <h2>Update data</h2>
+      <div class="tools">
+        <button class="btn primary" onclick="document.getElementById('csvInput').click()">Load a CSV</button>
+        <input type="file" id="csvInput" accept=".csv" />
+        <button class="btn" id="exportBtn">Export CSV</button>
+      </div>
+      <div class="hint">This map reads <b>schools.csv</b> from the same folder automatically. To update the real list, edit schools.csv on GitHub and open a PR. "Load a CSV" here only previews a file locally in your browser &mdash; it doesn't change schools.csv.</div>
+    </div>
+
+    <div class="sb-section">
+      <h2>Add a school</h2>
+      <form id="addForm">
+        <input id="f_name" placeholder="School name" required />
+        <div class="row2">
+          <input id="f_lat" placeholder="Latitude" required />
+          <input id="f_lng" placeholder="Longitude" required />
+        </div>
+        <select id="f_stage">
+          <option value="screening">Screening Stage</option>
+          <option value="training">Teacher Training Stage</option>
+          <option value="completed">Completed</option>
+        </select>
+        <input id="f_notes" placeholder="Notes (optional)" />
+        <button class="btn primary" type="submit">Add to map</button>
+      </form>
+      <div class="hint">Tip: right-click any spot on the map to copy its coordinates. Schools added here are local-only &mdash; use Export CSV and add the row to schools.csv via a PR to make it permanent.</div>
+    </div>
+
+    <div class="sb-section" style="flex:1;overflow:hidden;display:flex;flex-direction:column;border-bottom:none;">
+      <h2>Schools (<span id="listCount">0</span>)</h2>
+    </div>
+    <div id="list"></div>
+  </div>
+
+  <div id="map"></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+/* ---------- Stage config ---------- */
+const STAGES = {
+  screening: { label: "Screening Stage",        color: "#d64550" },
+  training:  { label: "Teacher Training Stage", color: "#e2963c" },
+  completed: { label: "Completed",              color: "#2f9e6e" }
+};
+
+/* ---------- Data now lives in schools.csv, loaded at startup ---------- */
+const DATA_URL = 'schools.csv';
+let schools = [];
+
+let activeStages = new Set(Object.keys(STAGES));
+let markers = {}; // id -> {marker, data}
+let idCounter = 0;
+
+/* ---------- Map setup ---------- */
+const map = L.map('map', { zoomControl: true }).setView([7.8731, 80.7718], 8);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 18,
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+map.on('contextmenu', (e) => {
+  document.getElementById('f_lat').value = e.latlng.lat.toFixed(5);
+  document.getElementById('f_lng').value = e.latlng.lng.toFixed(5);
+  showToast('Coordinates copied into the Add School form');
+});
+
+function makeIcon(color){
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:16px;height:16px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.4);"></div>`,
+    iconSize: [16,16],
+    iconAnchor: [8,8],
+    popupAnchor: [0,-8]
+  });
+}
+
+function addMarker(school){
+  const id = 's' + (idCounter++);
+  const cfg = STAGES[school.stage] || STAGES.screening;
+  const marker = L.marker([school.lat, school.lng], { icon: makeIcon(cfg.color) });
+  marker.bindPopup(
+    `<b>${escapeHtml(school.name)}</b><br>` +
+    (school.notes ? `${escapeHtml(school.notes)}<br>` : '') +
+    `<span class="stage-tag" style="background:${cfg.color}">${cfg.label}</span>`
+  );
+  markers[id] = { marker, data: school };
+  return id;
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function rebuildMap(){
+  Object.values(markers).forEach(m => map.removeLayer(m.marker));
+  markers = {};
+  idCounter = 0;
+  schools.forEach(s => {
+    const id = addMarker(s);
+    if(activeStages.has(s.stage)) markers[id].marker.addTo(map);
+  });
+  rebuildList();
+  rebuildCounts();
+  rebuildFilters();
+}
+
+/* ---------- Sidebar: filters ---------- */
+function rebuildFilters(){
+  const el = document.getElementById('filters');
+  el.innerHTML = '';
+  Object.entries(STAGES).forEach(([key, cfg]) => {
+    const count = schools.filter(s => s.stage === key).length;
+    const row = document.createElement('div');
+    row.className = 'filter-row';
+    row.style.opacity = activeStages.has(key) ? '1' : '.4';
+    row.innerHTML = `
+      <div class="filter-left">
+        <span class="dot" style="background:${cfg.color}"></span>
+        <span>${cfg.label}</span>
+      </div>
+      <span class="filter-count">${count}</span>`;
+    row.onclick = () => {
+      if(activeStages.has(key)) activeStages.delete(key); else activeStages.add(key);
+      rebuildMap();
+    };
+    el.appendChild(row);
+  });
+}
+
+/* ---------- Header counts ---------- */
+function rebuildCounts(){
+  const el = document.getElementById('counts');
+  el.innerHTML = Object.entries(STAGES).map(([key, cfg]) => {
+    const count = schools.filter(s => s.stage === key).length;
+    return `<div class="count-pill"><span class="dot" style="background:${cfg.color}"></span>${cfg.label}: ${count}</div>`;
+  }).join('') + `<div class="count-pill"><b>${schools.length}</b>&nbsp;total</div>`;
+}
+
+/* ---------- Sidebar: list ---------- */
+function rebuildList(query){
+  const listEl = document.getElementById('list');
+  listEl.innerHTML = '';
+  const q = (query || document.getElementById('search').value || '').trim().toLowerCase();
+  let shown = 0;
+  Object.entries(markers).forEach(([id, m]) => {
+    const s = m.data;
+    if(!activeStages.has(s.stage)) return;
+    if(q && !s.name.toLowerCase().includes(q)) return;
+    shown++;
+    const cfg = STAGES[s.stage];
+    const item = document.createElement('div');
+    item.className = 'school-item';
+    item.innerHTML = `
+      <span class="dot" style="background:${cfg.color}"></span>
+      <div style="flex:1;">
+        <div>${escapeHtml(s.name)}</div>
+        <div class="meta">${cfg.label}</div>
+      </div>
+      <button class="del" title="Remove">✕</button>`;
+    item.querySelector('div').onclick = null;
+    item.addEventListener('click', (e) => {
+      if(e.target.classList.contains('del')) return;
+      map.setView([s.lat, s.lng], 13, { animate: true });
+      m.marker.openPopup();
+    });
+    item.querySelector('.del').onclick = (e) => {
+      e.stopPropagation();
+      schools = schools.filter(x => x !== s);
+      rebuildMap();
+      showToast(`Removed "${s.name}"`);
+    };
+    listEl.appendChild(item);
+  });
+  document.getElementById('listCount').textContent = shown;
+}
+
+document.getElementById('search').addEventListener('input', () => rebuildList());
+
+/* ---------- Add school form ---------- */
+document.getElementById('addForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = document.getElementById('f_name').value.trim();
+  const lat = parseFloat(document.getElementById('f_lat').value);
+  const lng = parseFloat(document.getElementById('f_lng').value);
+  const stage = document.getElementById('f_stage').value;
+  const notes = document.getElementById('f_notes').value.trim();
+  if(!name || isNaN(lat) || isNaN(lng)){
+    showToast('Please fill in name, latitude and longitude');
+    return;
+  }
+  schools.push({ name, lat, lng, stage, notes });
+  rebuildMap();
+  map.setView([lat, lng], 12, { animate: true });
+  e.target.reset();
+  document.getElementById('f_stage').value = stage;
+  showToast(`Added "${name}"`);
+});
+
+/* ---------- Shared: turn raw CSV text into a schools array ---------- */
+function schoolsFromCsvText(text){
+  const rows = parseCSV(text);
+  if(rows.length === 0) return [];
+  const header = rows[0].map(h => h.trim().toLowerCase());
+  const iName = header.indexOf('name');
+  const iLat = header.indexOf('lat');
+  const iLng = header.indexOf('lng');
+  const iStage = header.indexOf('stage');
+  const iNotes = header.indexOf('notes');
+  if(iName === -1 || iLat === -1 || iLng === -1 || iStage === -1){
+    throw new Error('CSV needs name, lat, lng, stage columns');
+  }
+  const out = [];
+  for(let i=1;i<rows.length;i++){
+    const r = rows[i];
+    if(!r[iName]) continue;
+    const stageRaw = (r[iStage] || '').trim().toLowerCase();
+    const stage = STAGES[stageRaw] ? stageRaw : 'screening';
+    out.push({
+      name: r[iName].trim(),
+      lat: parseFloat(r[iLat]),
+      lng: parseFloat(r[iLng]),
+      stage,
+      notes: iNotes !== -1 ? (r[iNotes]||'').trim() : ''
+    });
+  }
+  return out.filter(s => !isNaN(s.lat) && !isNaN(s.lng));
+}
+
+/* ---------- Initial load: fetch schools.csv from the same folder ---------- */
+function loadFromServer(){
+  fetch(DATA_URL, { cache: 'no-store' })
+    .then(res => {
+      if(!res.ok) throw new Error('schools.csv not found (' + res.status + ')');
+      return res.text();
+    })
+    .then(text => {
+      schools = schoolsFromCsvText(text);
+      activeStages = new Set(Object.keys(STAGES));
+      rebuildMap();
+      if(schools.length){
+        const bounds = L.latLngBounds(schools.map(s => [s.lat, s.lng]));
+        map.fitBounds(bounds, { padding: [30,30] });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById('list').innerHTML =
+        `<div style="padding:14px;font-size:12.5px;color:var(--muted);">
+          Couldn't load <b>schools.csv</b>. This happens if you open index.html
+          directly as a file — it needs to be served over http(s), e.g. via
+          GitHub Pages, for the browser to fetch it. You can still use
+          <b>Import CSV</b> below to load a file manually.
+        </div>`;
+      rebuildMap();
+    });
+}
+
+/* ---------- CSV import (manual, e.g. for local testing) ---------- */
+document.getElementById('csvInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    try {
+      schools = schoolsFromCsvText(evt.target.result);
+      activeStages = new Set(Object.keys(STAGES));
+      rebuildMap();
+      if(schools.length){
+        const bounds = L.latLngBounds(schools.map(s => [s.lat, s.lng]));
+        map.fitBounds(bounds, { padding: [30,30] });
+      }
+      showToast(`Loaded ${schools.length} schools`);
+    } catch(err){
+      showToast(err.message || 'Could not parse that CSV');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+function parseCSV(text){
+  return text.split(/\r?\n/).filter(l => l.trim().length).map(line => {
+    const cells = [];
+    let cur = '', inQuotes = false;
+    for(let i=0;i<line.length;i++){
+      const c = line[i];
+      if(c === '"'){ inQuotes = !inQuotes; }
+      else if(c === ',' && !inQuotes){ cells.push(cur); cur=''; }
+      else cur += c;
+    }
+    cells.push(cur);
+    return cells;
+  });
+}
+
+/* ---------- CSV export ---------- */
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const header = 'name,lat,lng,stage,notes\n';
+  const body = schools.map(s =>
+    `"${s.name.replace(/"/g,'""')}",${s.lat},${s.lng},${s.stage},"${(s.notes||'').replace(/"/g,'""')}"`
+  ).join('\n');
+  const blob = new Blob([header + body], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'schools.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV downloaded');
+});
+
+/* ---------- Mobile menu ---------- */
+document.getElementById('menuBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+/* ---------- Toast ---------- */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ---------- Init ---------- */
+loadFromServer();
+</script>
+</body>
+</html>

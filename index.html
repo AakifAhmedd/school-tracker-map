@@ -276,9 +276,10 @@
 <script>
 /* ---------- Stage config ---------- */
 const STAGES = {
-  screening: { label: "Screening Stage",        color: "#d64550" },
-  training:  { label: "Teacher Training Stage", color: "#e2963c" },
-  completed: { label: "Completed",              color: "#2f9e6e" }
+  not_started: { label: "Not Started",          color: "#9a978c" },
+  training:    { label: "Teacher Training Stage", color: "#d64550" },
+  screening:   { label: "Vision Screening Stage",  color: "#e2963c" },
+  completed:   { label: "Completed",               color: "#2f9e6e" }
 };
 
 /* ---------- Data now lives in schools.csv, loaded at startup ---------- */
@@ -314,7 +315,7 @@ function makeIcon(color){
 
 function addMarker(school){
   const id = 's' + (idCounter++);
-  const cfg = STAGES[school.stage] || STAGES.screening;
+  const cfg = STAGES[school.stage] || STAGES.not_started;
   const marker = L.marker([school.lat, school.lng], { icon: makeIcon(cfg.color) });
   marker.bindPopup(
     `<b>${escapeHtml(school.name)}</b><br>` +
@@ -452,7 +453,7 @@ function schoolsFromCsvText(text){
     const r = rows[i];
     if(!r[iName]) continue;
     const stageRaw = (r[iStage] || '').trim().toLowerCase();
-    const stage = STAGES[stageRaw] ? stageRaw : 'screening';
+    const stage = STAGES[stageRaw] ? stageRaw : 'not_started';
     out.push({
       name: r[iName].trim(),
       lat: parseFloat(r[iLat]),

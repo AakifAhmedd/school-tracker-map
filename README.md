@@ -11,7 +11,8 @@ Once GitHub Pages is enabled for this repo, your map will be at
 The two files must stay together in the repo root.
 
 CSV columns: `name, lat, lng, stage, notes`
-`stage` must be one of: `screening`, `training`, `completed`
+`stage` must be one of: `not_started`, `training`, `screening`, `completed`
+(sequence: Not Started → Teacher Training → Vision Screening → Completed)
 
 ## Updating the list (the PR workflow)
 1. On GitHub, open `schools.csv` and click the pencil (Edit) icon — or edit it locally and push a branch.

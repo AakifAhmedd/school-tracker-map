@@ -3,8 +3,8 @@
 Interactive map tracking schools through three stages: Screening, Teacher Training, and Completed.
 
 ## Live site
-Once GitHub Pages is enabled for this repo, your map will be at:
-`https://<your-username>.github.io/<repo-name>/`
+Once GitHub Pages is enabled for this repo, your map will be at
+`https://AakifAhmedd.github.io/school-tracker-map/`
 
 ## How the data works
 `index.html` loads its markers from **`schools.csv`** in this same folder at page-load time.

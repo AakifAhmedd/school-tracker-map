@@ -291,8 +291,8 @@ let markers = {}; // id -> {marker, data}
 let idCounter = 0;
 
 /* ---------- Map setup ---------- */
-const map = L.map('map', { zoomControl: true }).setView([7.8731, 80.7718], 8);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+const map = L.map('map', { zoomControl: false }).setView([7.8731, 80.7718], 8);
+L.control.zoom({ position: 'topright' }).addTo(map);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 18,
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);

@@ -291,11 +291,29 @@ let markers = {}; // id -> {marker, data}
 let idCounter = 0;
 
 /* ---------- Map setup ---------- */
-const map = L.map('map', { zoomControl: false }).setView([7.8731, 80.7718], 8);
-L.control.zoom({ position: 'topright' }).addTo(map);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 18,
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
+// 1. Define your center coordinates
+const centerLat = 7.8731;
+const centerLng = 80.7718;
+
+// 2. Define how far out the bounds extend (e.g., ~1.5 degrees in each direction)
+const latOffset = 1.5;
+const lngOffset = 1.5;
+
+const boundingBox = L.latLngBounds(
+  [centerLat - latOffset, centerLng - lngOffset], // South-West point
+  [centerLat + latOffset, centerLng + lngOffset]  // North-East point
+);
+
+// 3. Initialize map with bounds & zoom limits
+const map = L.map('map', {
+  zoomControl: false,          // Placed zoom control on the right
+  minZoom: 7,                  // Minimum zoom out level
+  maxZoom: 18,                 // Maximum zoom in level
+  maxBounds: boundingBox,      // Restricts movement outside this area
+  maxBoundsViscosity: 1.0      // Hard barrier (prevents elastic bounce outside bounds)
+}).setView([centerLat, centerLng], 8);
+
+L.control.zoom({ position: 'topright' }).addTo(map);
 
 map.on('contextmenu', (e) => {
   document.getElementById('f_lat').value = e.latlng.lat.toFixed(5);

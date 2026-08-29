@@ -306,76 +306,74 @@
 
     <div class="app">
       <div id="sidebar">
-        <div class="sb-section">
-          <h2>Search</h2>
-          <input id="search" type="text" placeholder="Find a school by name…" />
-        </div>
+  <div class="sb-section">
+    <h2>Search</h2>
+    <input id="search" type="text" placeholder="Find a school by name…" />
+  </div>
 
-        <div class="sb-section">
-          <h2>Stages (click to toggle)</h2>
-          <div id="filters"></div>
-        </div>
+  <div
+    class="sb-section"
+    style="
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    "
+  >
+    <h2>Schools (<span id="listCount">0</span>)</h2>
+    <div id="list"></div>
+  </div>
 
-        <div class="sb-section">
-          <h2>Update data</h2>
-          <div class="tools">
-            <button
-              class="btn primary"
-              onclick="document.getElementById('csvInput').click()"
-            >
-              Load a CSV
-            </button>
-            <input type="file" id="csvInput" accept=".csv" />
-            <button class="btn" id="exportBtn">Export CSV</button>
-          </div>
-          <div class="hint">
-            This map reads <b>schools.csv</b> from the same folder
-            automatically. To update the real list, edit schools.csv on GitHub
-            and open a PR. "Load a CSV" here only previews a file locally in
-            your browser &mdash; it doesn't change schools.csv.
-          </div>
-        </div>
+  <div class="sb-section">
+    <h2>Stages (click to toggle)</h2>
+    <div id="filters"></div>
+  </div>
 
-        <div class="sb-section">
-          <h2>Add a school</h2>
-          <form id="addForm">
-            <input id="f_name" placeholder="School name" required />
-            <div class="row2">
-              <input id="f_lat" placeholder="Latitude" required />
-              <input id="f_lng" placeholder="Longitude" required />
-            </div>
-            <select id="f_stage">
-              <option value="screening">Screening Stage</option>
-              <option value="training">Teacher Training Stage</option>
-              <option value="completed">Completed</option>
-            </select>
-            <input id="f_notes" placeholder="Notes (optional)" />
-            <button class="btn primary" type="submit">Add to map</button>
-          </form>
-          <div class="hint">
-            Tip: right-click any spot on the map to copy its coordinates.
-            Schools added here are local-only &mdash; use Export CSV and add the
-            row to schools.csv via a PR to make it permanent.
-          </div>
-        </div>
-
-        <div
-          class="sb-section"
-          style="
-            flex: 1;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            border-bottom: none;
-          "
-        >
-          <h2>Schools (<span id="listCount">0</span>)</h2>
-        </div>
-        <div id="list"></div>
-      </div>
-
-      <div id="map"></div>
+  <div class="sb-section">
+    <h2>Update data</h2>
+    <div class="tools">
+      <button
+        class="btn primary"
+        onclick="document.getElementById('csvInput').click()"
+      >
+        Load a CSV
+      </button>
+      <input type="file" id="csvInput" accept=".csv" />
+      <button class="btn" id="exportBtn">Export CSV</button>
     </div>
+    <div class="hint">
+      This map reads <b>schools.csv</b> from the same folder
+      automatically. To update the real list, edit schools.csv on GitHub
+      and open a PR. "Load a CSV" here only previews a file locally in
+      your browser &mdash; it doesn't change schools.csv.
+    </div>
+  </div>
+
+  <div class="sb-section" style="border-bottom: none;">
+    <h2>Add a school</h2>
+    <form id="addForm">
+      <input id="f_name" placeholder="School name" required />
+      <div class="row2">
+        <input id="f_lat" placeholder="Latitude" required />
+        <input id="f_lng" placeholder="Longitude" required />
+      </div>
+      <select id="f_stage">
+        <option value="screening">Screening Stage</option>
+        <option value="training">Teacher Training Stage</option>
+        <option value="completed">Completed</option>
+      </select>
+      <input id="f_notes" placeholder="Notes (optional)" />
+      <button class="btn primary" type="submit">Add to map</button>
+    </form>
+    <div class="hint">
+      Tip: right-click any spot on the map to copy its coordinates.
+      Schools added here are local-only &mdash; use Export CSV and add the
+      row to schools.csv via a PR to make it permanent.
+    </div>
+  </div>
+</div>
+
+<div id="map"></div>
 
     <div id="toast"></div>
 

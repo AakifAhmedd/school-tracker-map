@@ -12,7 +12,7 @@ function element(id) {
     classList: {add() {}, remove() {}},
     setAttribute(k, v) { this.attrs[k] = v; },
     addEventListener(k, fn) { this.listeners[k] = fn; },
-    closest() { return element('details'); }, scrollIntoView() {},
+    closest() { return element('details'); }, scrollIntoView() {}, focus() {},
     reset() {
       for (const key of ['name', 'lat', 'lng', 'location', 'notes']) element('f_' + key).value = '';
       element('f_stage').value = 'screening';
@@ -25,12 +25,12 @@ const mapEvents = {};
 const context = vm.createContext({
   URL,
   document: {getElementById: element, querySelector: element},
-  window: {isSecureContext: true, matchMedia: () => ({addEventListener() {}})},
+  window: {isSecureContext: true, matchMedia: () => ({matches: false, addEventListener() {}})},
   navigator: {geolocation: {getCurrentPosition(success, failure, options) { gps.push({success, failure, options}); }}},
   requestAnimationFrame: fn => fn(),
   map: {on: (name, fn) => mapEvents[name] = fn, invalidateSize() {}, setView() {}},
   reducedMotion: true,
-  rebuildMap() {}, showToast() {},
+  rebuildMap() {}, rebuildList() {}, showToast() {}, persistSchoolChanges() { return true; },
 });
 const helpers = script.slice(script.indexOf('      function coordinate'), script.indexOf('      function fitSchools'));
 const controls = script.slice(script.indexOf('      let pickingLocation'), script.indexOf('      // One decoded'));
@@ -95,4 +95,30 @@ assert.equal(element('f_lat').value, '7.300000');
 context.window.isSecureContext = false;
 element('locateBtn').onclick();
 assert.match(element('locationStatus').textContent, /HTTPS/);
+// Mobile capture preserves existing metadata and starts new schools at Not Started.
+run('phoneLayout.matches = true; openSchoolForm(schools[0])');
+assert.equal(element('sidebar').dataset.editor, 'open');
+assert.equal(element('f_name').readOnly, true);
+assert.equal(element('manualCoords').open, false);
+element('f_name').value = 'Unintended rename';
+element('f_stage').value = 'training';
+element('f_notes').value = 'Unintended notes change';
+run('fillLocation(7.2,80.2,"Ready")');
+element('addForm').listeners.submit({preventDefault() {}, target: element('addForm')});
+assert.equal(run('schools[0].name'), 'Existing school');
+assert.equal(run('schools[0].stage'), 'completed');
+assert.equal(run('schools[0].notes'), 'Keep notes');
+assert.equal(element('sidebar').dataset.editor, 'closed');
+assert.equal(element('.app').dataset.view, 'inputs');
+element('newSchoolBtn').onclick();
+assert.equal(element('f_name').readOnly, false);
+assert.equal(element('f_stage').value, 'not_started');
+element('f_name').value = 'Phone school';
+run('fillLocation(7.4,80.4,"Ready")');
+element('addForm').listeners.submit({preventDefault() {}, target: element('addForm')});
+assert.equal(run('schools[2].stage'), 'not_started');
+assert.equal(element('locationReady').hidden, true);
+element('newSchoolBtn').onclick();
+element('backToSchools').onclick();
+assert.equal(element('sidebar').dataset.editor, 'closed');
 console.log('Passed: Maps links, edit without duplicates, local save, tabs, map picking, GPS success/errors and stale-response protection.');

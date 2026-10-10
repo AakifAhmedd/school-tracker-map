@@ -1,6 +1,6 @@
 # School Programme Tracker — Sri Lanka
 
-SELB (Sharp Eyes Learn Better) tracks schools through Not Started, Teacher Training, Vision Screening, and Completed. Current version: **1.1.0**.
+SELB (Sharp Eyes Learn Better) tracks schools through Not Started, Teacher Training, Vision Screening, and Completed. Current version: **1.2.0**.
 
 ## Live site
 The live GitHub Pages map is at
@@ -30,7 +30,7 @@ All CSV schools appear in the list and stage totals. Only schools with valid coo
 
 The map fits the school locations before attaching its tile layer, with a 1.5-second fallback when CSV loading is slow. Stage filters reuse markers; Rotary icons share one cached SVG asset. Tiles load after panning stops and keep a smaller buffer. Tile speed still depends on the existing OpenStreetMap HOT provider and the visitor's connection.
 
-Update data and Add a school are expandable panels. Add/remove/import changes last only for the current page session; export the CSV and use the PR workflow to retain them. Keep `rotary-wheel.svg` beside `index.html` and `schools.csv`.
+Update data and Add a school are expandable panels. Saved add/edit/remove changes are retained on this device when browser storage is available; imported previews remain session-only until saved. Export the CSV and use the PR workflow to update the shared list. Keep `rotary-wheel.svg` beside `index.html` and `schools.csv`.
 
 ## Versioning and verification
 
@@ -51,3 +51,9 @@ On screens up to 760px, switch between **Map** and **Inputs** tabs. Select **Loc
 Coordinate-bearing Google Maps URLs fill the latitude/longitude fields. Place-pin coordinates take priority over the map camera centre; camera-only URLs display a check-location reminder. Short links and name-only links offer **Open Google Maps** with instructions to copy the full URL or the pin’s coordinates. This static app does not resolve opaque short links or geocode names.
 
 Current location runs only when requested and uses the browser’s permission prompt on HTTPS (or localhost). It reports estimated accuracy and handles denial, timeout, and unavailable location. Verify the point before saving; no location is stored until the school form is saved locally. See [Google Maps URL documentation](https://developers.google.com/maps/documentation/urls/get-started) and [browser geolocation documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition).
+
+## Mobile capture — 1.2.0
+
+Phones open on the **Schools** tab, which starts with **Add a new school**, search, and a list of schools needing locations. Switch to **All schools** to locate an already mapped school. Stage filters, deletion, import, stage editing, and notes editing are desktop tools. On a phone, the editor is a separate view with Back to schools, a school name, large GPS/map controls, Maps-link entry, a location-ready summary, optional manual coordinates, and Save location / Save school. Existing names, stages, and notes are preserved on mobile; new schools start at Not Started. Saving returns to the school list.
+
+Saved changes persist in browser localStorage on this device. **Download CSV** appears after saving for transfer to desktop and the existing GitHub update workflow; there is no automatic cross-device sync or GitHub write. If storage is blocked, the app clearly asks for a download before closing. If the published CSV changes, it loads the latest published data and offers the earlier saved copy as a separate download instead of overwriting newer school data. New session saves in that situation require a download as well. After reviewing/downloading saved copies, the desktop **Reset device changes** action clears device saves and returns to the published list, with confirmation. Browser storage clearing also clears device saves.

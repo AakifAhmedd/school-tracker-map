@@ -9,7 +9,7 @@ const script = html.match(/<script>\s*([\s\S]*?)<\/script>/)[1];
 new vm.Script(script);
 const helpers = script.slice(script.indexOf('      function coordinate'), script.indexOf('      function fitSchools')) +
   script.slice(script.indexOf('      function schoolsFromCsvText'), script.indexOf('      /* ---------- Initial load')) +
-  script.slice(script.indexOf('      function parseCSV'), script.indexOf('      /* ---------- CSV export'));
+  script.slice(script.indexOf('      function parseCSV'), script.indexOf('      /* ---------- Device saves'));
 const context = vm.createContext({URL});
 vm.runInContext(`const STAGES = {not_started:{},training:{},screening:{},completed:{}}; let schools = []; ${helpers}`, context);
 const csv = fs.readFileSync(path.join(root, 'schools.csv'), 'utf8');
@@ -71,6 +71,7 @@ for (const input of ['91,80', '7,181', 'not coordinates', 'https://evil.example/
   assert.equal(vm.runInContext('locationFromText(input)', context), null);
 }
 require('./location-flow.cjs');
+require('./device-saves.cjs');
 const version = fs.readFileSync(path.join(root, 'VERSION'), 'utf8').trim();
 assert.match(html, new RegExp(`application-version" content="${version.replaceAll('.', '\\.')}`));
 assert.ok(html.includes(`rotary-wheel.svg?v=${version}`));

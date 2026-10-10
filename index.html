@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="application-version" content="1.1.0" />
+    <meta name="application-version" content="1.2.0" />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link rel="preconnect" href="https://a.tile.openstreetmap.fr" />
     <link rel="preconnect" href="https://b.tile.openstreetmap.fr" />
     <link rel="preconnect" href="https://c.tile.openstreetmap.fr" />
-    <link rel="preload" href="rotary-wheel.svg?v=1.1.0" as="image" />
+    <link rel="preload" href="rotary-wheel.svg?v=1.2.0" as="image" />
     <title>SELB - Sharp Eyes Learn Better</title>
     <link rel="icon" type="image/png" href="https://brandcenter.rotary.org/dist/brandcenter/favicon-32x32.png?v=dcf63410fce77e4a51ba11a9b721bd3e"/>
     <link
@@ -292,21 +292,87 @@
       #sidebar label { font-size: 11px; font-weight: 600; }
       .location-edit { align-self: center; font-size: 11px; padding: 7px; }
       .btn:disabled { opacity: .6; cursor: wait; }
+      .mobile-only { display: none; }
+      [hidden] { display: none !important; }
+      #schoolEditor { border-bottom: none; }
+      #schoolEditor .editor-heading { display: none; }
+      .coordinates-fields { display: flex; flex-direction: column; gap: 6px; }
+      .manual-location { border: 1px solid var(--line); padding: 10px; border-radius: 8px; }
+      .manual-location summary { font-weight: 400; }
+      #locationReady { padding: 10px; border: 1px solid #bedccc; background: #eef7f1; border-radius: 8px; font-size: 12px; }
+      #deviceBanner { font-size: 12px; padding: 12px 16px; background: #eef7f1; border-bottom: 1px solid var(--line); }
+      #deviceBanner .tools { margin-top: 8px; }
+      .desktop-fields { display: flex; flex-direction: column; gap: 6px; }
+      .save-actions { display: flex; flex-direction: column; gap: 6px; }
+      .form-caption { font-size: 11px; line-height: 1.5; color: var(--muted); }
       @media (max-width: 760px) {
         body { height: 100dvh; }
-        header { padding: 10px 14px; gap: 8px; }
-        .counts { gap: 5px; }
-        .count-pill { font-size: 10px; padding: 4px 6px; }
-        .mobile-tabs { display: flex; flex: none; gap: 4px; padding: 6px 12px; background: var(--panel); border-bottom: 1px solid var(--line); }
-        .mobile-tabs button { flex: 1; min-height: 44px; font: inherit; font-size: 14px; border: 0; border-radius: 8px; background: var(--paper); color: var(--ink); }
+        header { padding: 12px 18px; flex: none; }
+        header h1 { font-size: 16px; }
+        header h1 span { font-size: 12px; }
+        header .counts { display: none; }
+        .mobile-tabs { display: flex; flex: none; gap: 4px; padding: 0 16px 10px; background: var(--panel); border-bottom: 1px solid var(--line); }
+        .mobile-tabs button { flex: 1; min-height: 44px; font: inherit; font-size: 14px; border: 0; border-radius: 10px; background: var(--paper); color: var(--ink); }
         .mobile-tabs button[aria-selected="true"] { background: var(--accent); color: white; font-weight: 600; }
+        .mobile-only { display: block; }
+        .desktop-only, .desktop-fields { display: none !important; }
         #pickHint { left: 12px; max-width: calc(100% - 72px); }
-        #sidebar { display: none; width: 100%; border-right: 0; }
+        #sidebar { display: none; width: 100%; border-right: 0; background: var(--paper); overscroll-behavior: contain; }
         .app[data-view="inputs"] #sidebar { display: flex; }
         .app[data-view="inputs"] #map, .app[data-view="inputs"] #pickHint { display: none; }
-        #sidebar input, #sidebar select, #search { font-size: 16px; min-height: 44px; }
+        #sidebar .sb-section { padding: 16px 18px; border-bottom: 0; }
+        .capture-home h2 { color: var(--ink); text-transform: none; margin: 0 0 6px; font-size: 22px; letter-spacing: -.4px; line-height: 1.2; }
+        .capture-home p { margin: 0 0 14px; font-size: 14px; color: var(--muted); line-height: 1.5; }
+        #newSchoolBtn { width: 100%; font-size: 15px; min-height: 48px; border-radius: 10px; }
+        #searchSection { padding-top: 0 !important; padding-bottom: 12px !important; }
+        #searchSection h2 { display: none; }
+        #sidebar input, #sidebar select, #sidebar #addForm input, #sidebar #addForm select, #search { font-size: 16px; min-height: 48px; border-radius: 10px; padding: 12px; width: 100%; min-width: 0; }
+        #sidebar input { background: white; }
+        #sidebar input[readonly] { background: var(--paper); border-color: transparent; font-weight: 600; padding-left: 0; }
+        #sidebar .row2 input { width: 50%; }
         .btn { min-height: 44px; }
-        .filter-row { min-height: 44px; }
+        #listSection { flex: none !important; min-height: 0 !important; overflow: visible !important; padding-top: 0 !important; }
+        #listSection h2 { font-size: 12px; margin: 16px 0 8px; }
+        #list { flex: none; overflow: visible; padding: 0; }
+        .school-item { background: white; border: 1px solid var(--line); padding: 14px 12px; margin-bottom: 8px; gap: 10px; align-items: center; border-radius: 12px; }
+        .school-item .dot { display: none; }
+        .school-select { font-size: 15px; line-height: 1.4; min-height: 44px; }
+        .school-item .meta { font-size: 12px; margin-top: 4px; }
+        .location-edit { min-width: 64px; font-size: 13px; color: var(--accent); background: #eef7f1; border-color: #d0e3d7; font-weight: 600; border-radius: 8px; }
+        .school-item .del { display: none; }
+        #coverage { font-size: 12px; margin-top: 10px; }
+        .school-scope { display: flex; gap: 6px; }
+        .school-scope button { flex: 1; font-size: 12px; padding: 9px 4px; min-height: 44px; background: transparent; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); }
+        .school-scope button[aria-pressed="true"] { background: white; color: var(--accent); border-color: var(--accent); font-weight: 600; }
+        #schoolEditor { display: none; }
+        #sidebar[data-editor="open"] > :not(#schoolEditor) { display: none !important; }
+        #sidebar[data-editor="open"] #schoolEditor { display: block; padding: 0; background: white; flex: 1; }
+        #schoolEditor > summary, #schoolEditor > .hint { display: none; }
+        #schoolEditor .editor-heading { display: block; padding: 14px 18px 0; }
+        #backToSchools { border: 0; padding: 0; background: none; color: var(--accent); font: inherit; font-size: 14px; min-height: 40px; }
+        .editor-heading h2 { font-size: 23px; color: var(--ink); text-transform: none; letter-spacing: -.4px; margin: 6px 0 6px; }
+        .editor-heading p { color: var(--muted); font-size: 14px; line-height: 1.5; margin: 0; }
+        form#addForm { padding: 16px 18px 0; gap: 10px; }
+        #sidebar label { font-size: 13px; }
+        .location-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; order: 0; }
+        .location-tools .btn { min-height: 50px; font-size: 14px; border-radius: 10px; }
+        #locateBtn { grid-column: 1 / -1; background: var(--accent); color: white; border-color: var(--accent); font-weight: 600; font-size: 15px; }
+        #pickBtn { grid-column: 1 / -1; background: white; color: var(--accent); }
+        .link-entry { display: flex; gap: 8px; }
+        .link-entry input { flex: 1; }
+        #useLink { flex: none; min-width: 62px; font-size: 13px; border-radius: 10px; }
+        #openMaps { text-align: center; padding-top: 12px; font-size: 14px; }
+        #locationStatus:empty { display: none; }
+        #locationStatus { font-size: 13px; line-height: 1.5; margin: 0; }
+        #locationReady { font-size: 13px; padding: 12px; line-height: 1.5; }
+        .manual-location { border: 0; padding: 8px 0; }
+        .manual-location summary { color: var(--accent); font-size: 13px; min-height: 30px; }
+        #manualCoords:not([open]) .coordinates-fields { display: none; }
+        #manualCoords[open] .coordinates-fields { display: flex; }
+        .save-actions { position: sticky; bottom: 0; z-index: 2; margin: 4px -18px 0; padding: 12px 18px max(12px, env(safe-area-inset-bottom)); background: white; border-top: 1px solid var(--line); }
+        #saveSchool { font-size: 16px; font-weight: 600; min-height: 50px; border-radius: 10px; }
+        .form-caption { font-size: 12px; text-align: center; }
+        #cancelEdit { display: none !important; }
         #toast { bottom: max(16px, env(safe-area-inset-bottom)); width: max-content; max-width: calc(100% - 24px); }
       }
       .school-marker > div {
@@ -330,7 +396,7 @@
   <body>
     <header>
       <div style="display: flex; align-items: center; gap: 10px">
-        <h1>Sharp Eyes Learn Better<span>School Program Tracker <small class="version">v1.1.0</small></span></h1>
+        <h1>Sharp Eyes Learn Better<span>School Program Tracker <small class="version">v1.2.0</small></span></h1>
       </div>
       <div class="counts" id="counts"></div>
     </header>
@@ -338,17 +404,30 @@
     <div id="loadStatus" role="status">Loading schools…</div>
     <nav class="mobile-tabs" role="tablist" aria-label="School tracker views">
       <button id="mapTab" type="button" role="tab" aria-controls="map" aria-selected="true">Map</button>
-      <button id="inputsTab" type="button" role="tab" aria-controls="sidebar" aria-selected="false" tabindex="-1">Inputs</button>
+      <button id="inputsTab" type="button" role="tab" aria-controls="sidebar" aria-selected="false" tabindex="-1">Schools</button>
     </nav>
     <div class="app" data-view="map">
-      <div id="sidebar" role="tabpanel" aria-labelledby="inputsTab">
-  <div class="sb-section">
+      <div id="sidebar" role="tabpanel" aria-labelledby="inputsTab" data-editor="closed">
+  <div class="sb-section mobile-only capture-home">
+    <h2>Add school locations</h2>
+    <p>Choose a school below, or add a new one.</p>
+    <button class="btn primary" id="newSchoolBtn" type="button">＋ Add a new school</button>
+  </div>
+  <div id="deviceBanner" hidden>
+    <div id="deviceStatus" role="status"></div>
+    <div class="tools">
+      <button class="btn" id="mobileExport" type="button">Download CSV</button>
+      <button class="btn" id="recoveryExport" type="button" hidden>Download earlier saved copy</button>
+      <button class="btn desktop-only" id="resetDevice" type="button">Reset device changes</button>
+    </div>
+  </div>
+  <div class="sb-section" id="searchSection">
     <h2>Search</h2>
     <input id="search" type="text" aria-label="Search schools" placeholder="Find a school by name…" />
   </div>
 
   <div
-    class="sb-section"
+    class="sb-section" id="listSection"
     style="
       flex: 1;
       min-height: 190px;
@@ -357,17 +436,21 @@
       flex-direction: column;
     "
   >
+    <div class="mobile-only school-scope" role="group" aria-label="Which schools to show">
+      <button id="missingScope" type="button" aria-pressed="true">Need a location <span id="missingCount"></span></button>
+      <button id="allScope" type="button" aria-pressed="false">All schools <span id="allCount"></span></button>
+    </div>
     <h2>Schools (<span id="listCount">0</span>)</h2>
     <div id="list"></div>
     <div class="hint" id="coverage"></div>
   </div>
 
-  <div class="sb-section">
+  <div class="sb-section desktop-only">
     <h2>Stages (click to toggle)</h2>
     <div id="filters"></div>
   </div>
 
-  <details class="sb-section">
+  <details class="sb-section desktop-only">
     <summary>Update data</summary>
     <div class="tools">
       <button
@@ -387,39 +470,56 @@
     </div>
   </details>
 
-  <details class="sb-section" style="border-bottom: none;">
+  <details class="sb-section" id="schoolEditor">
     <summary id="formTitle">Add a school</summary>
-    <form id="addForm">
-      <input id="f_name" aria-label="School name" placeholder="School name" required />
-      <label for="f_location">Google Maps link or coordinates</label>
-      <input id="f_location" placeholder="Paste a Maps link or 7.87, 80.77" autocomplete="off" aria-describedby="locationStatus" />
+    <div class="editor-heading">
+      <button id="backToSchools" type="button">‹ Back to schools</button>
+      <h2 id="editorTitle">Add a school</h2>
+      <p id="editorDescription">Enter the name and choose its location.</p>
+    </div>
+    <form id="addForm" novalidate>
+      <label for="f_name">School name</label>
+      <input id="f_name" aria-label="School name" placeholder="e.g. Kalaiwani T MV" required />
       <div class="location-tools">
-        <button class="btn" id="useLink" type="button">Use link / coordinates</button>
-        <button class="btn" id="locateBtn" type="button">Use current location</button>
-        <button class="btn" id="pickBtn" type="button">Pick on map</button>
+        <button class="btn" id="locateBtn" type="button">Use my current location</button>
+        <button class="btn" id="pickBtn" type="button">Choose a point on the map</button>
+      </div>
+      <label for="f_location">Or paste a Google Maps link</label>
+      <div class="link-entry">
+        <input id="f_location" placeholder="Maps link or latitude, longitude" autocomplete="off" aria-describedby="locationStatus" />
+        <button class="btn" id="useLink" type="button">Use link</button>
       </div>
       <a id="openMaps" class="btn" target="_blank" rel="noopener noreferrer" hidden>Open Google Maps</a>
       <div class="hint" id="locationStatus" role="status"></div>
-      <label for="f_lat">Latitude / longitude</label>
-      <div class="row2">
-        <input id="f_lat" aria-label="Latitude" placeholder="Latitude" inputmode="decimal" required />
-        <input id="f_lng" aria-label="Longitude" placeholder="Longitude" inputmode="decimal" required />
+      <div id="locationReady" hidden><b>Location ready</b><br><span id="locationPair"></span></div>
+      <details id="manualCoords" class="manual-location" open>
+        <summary>Enter coordinates manually</summary>
+        <div class="coordinates-fields">
+          <label for="f_lat">Latitude / longitude</label>
+          <div class="row2">
+            <input id="f_lat" aria-label="Latitude" placeholder="Latitude" inputmode="decimal" required />
+            <input id="f_lng" aria-label="Longitude" placeholder="Longitude" inputmode="decimal" required />
+          </div>
+        </div>
+      </details>
+      <div class="desktop-fields">
+        <label for="f_stage">Programme stage</label>
+        <select id="f_stage" aria-label="Programme stage">
+          <option value="not_started">Not Started</option>
+          <option value="screening" selected>Screening Stage</option>
+          <option value="training">Teacher Training Stage</option>
+          <option value="completed">Completed</option>
+        </select>
+        <label for="f_notes">Notes</label>
+        <input id="f_notes" aria-label="Notes" placeholder="Notes (optional)" />
       </div>
-      <select id="f_stage" aria-label="Programme stage">
-        <option value="not_started">Not Started</option>
-        <option value="screening" selected>Screening Stage</option>
-        <option value="training">Teacher Training Stage</option>
-        <option value="completed">Completed</option>
-      </select>
-      <input id="f_notes" aria-label="Notes" placeholder="Notes (optional)" />
-      <button class="btn primary" id="saveSchool" type="submit">Add to map</button>
-      <button class="btn" id="cancelEdit" type="button" hidden>Cancel editing</button>
+      <div class="save-actions">
+        <button class="btn primary" id="saveSchool" type="submit">Save school</button>
+        <div class="form-caption">Saves on this device. Download CSV to update the shared list.</div>
+        <button class="btn" id="cancelEdit" type="button" hidden>Cancel editing</button>
+      </div>
     </form>
-    <div class="hint">
-      Choose a location, then save. On a phone, use Pick on map and tap the school. Current location is useful when you are at the school.
-      Changes here are local-only &mdash; use Export CSV and replace
-      schools.csv via a PR to make it permanent.
-    </div>
+    <div class="hint desktop-only">Changes are saved on this device. Export CSV to update schools.csv through the existing PR workflow.</div>
   </details>
 </div>
 
@@ -472,6 +572,10 @@
       let pickingLocation = false;
       let editingSchool = null;
       let locationRequest = 0;
+      let mobileScope = "missing";
+      let pendingFit = false;
+      const phoneLayout = window.matchMedia("(max-width: 760px)");
+      const sidebar = document.getElementById("sidebar");
       const app = document.querySelector(".app");
       const locationStatus = document.getElementById("locationStatus");
       function showView(view) {
@@ -481,7 +585,10 @@
           tab.setAttribute("aria-selected", String(name === view));
           tab.tabIndex = name === view ? 0 : -1;
         }
-        if (view === "map") requestAnimationFrame(() => map.invalidateSize({pan: false}));
+        if (view === "map") requestAnimationFrame(() => {
+          map.invalidateSize({pan: false});
+          if (pendingFit) { pendingFit = false; fitSchools(); }
+        });
       }
       for (const view of ["map", "inputs"]) {
         document.getElementById(view + "Tab").onclick = () => showView(view);
@@ -503,7 +610,7 @@
         locationRequest++;
         const button = document.getElementById("locateBtn");
         button.disabled = false;
-        button.textContent = "Use current location";
+        button.textContent = "Use my current location";
       }
       function fillLocation(lat, lng, message) {
         if (!hasCoordinates({lat, lng})) return;
@@ -511,6 +618,31 @@
         document.getElementById("f_lat").value = lat.toFixed(6);
         document.getElementById("f_lng").value = lng.toFixed(6);
         locationStatus.textContent = message;
+        updateLocationReady();
+      }
+      function updateLocationReady() {
+        const point = {lat: coordinate(document.getElementById("f_lat").value), lng: coordinate(document.getElementById("f_lng").value)};
+        document.getElementById("locationReady").hidden = !hasCoordinates(point);
+        document.getElementById("locationPair").textContent = hasCoordinates(point) ? `${point.lat.toFixed(5)}, ${point.lng.toFixed(5)}` : "";
+      }
+      function syncPhoneEditor() {
+        document.getElementById("f_name").readOnly = phoneLayout.matches && Boolean(editingSchool);
+        document.getElementById("manualCoords").open = !phoneLayout.matches;
+      }
+      function closeSchoolForm() {
+        cancelLocationRequest();
+        stopPicking();
+        editingSchool = null;
+        document.getElementById("addForm").reset();
+        sidebar.dataset.editor = "closed";
+        document.getElementById("schoolEditor").open = false;
+        document.getElementById("formTitle").textContent = "Add a school";
+        document.getElementById("saveSchool").textContent = "Save school";
+        document.getElementById("cancelEdit").hidden = true;
+        document.getElementById("openMaps").hidden = true;
+        locationStatus.textContent = "";
+        syncPhoneEditor();
+        updateLocationReady();
       }
       function openSchoolForm(school = null) {
         cancelLocationRequest();
@@ -520,17 +652,40 @@
         for (const key of ["name", "lat", "lng", "stage", "notes"]) {
           if (school) document.getElementById("f_" + key).value = key === "lat" || key === "lng" ? (Number.isFinite(school[key]) ? school[key] : "") : school[key];
         }
-        document.getElementById("formTitle").textContent = school ? "Edit school location" : "Add a school";
-        document.getElementById("saveSchool").textContent = school ? "Save changes" : "Add to map";
+        if (!school && phoneLayout.matches) document.getElementById("f_stage").value = "not_started";
+        document.getElementById("formTitle").textContent = school ? "Edit school" : "Add a school";
+        document.getElementById("editorTitle").textContent = school ? "Add a location" : "Add a school";
+        document.getElementById("editorDescription").textContent = school ? "Use your location at the school, a map point, or a Maps link." : "Enter the school name, then choose its location.";
+        document.getElementById("saveSchool").textContent = school ? "Save location" : "Save school";
         document.getElementById("cancelEdit").hidden = !school;
         locationStatus.textContent = "";
         document.getElementById("openMaps").hidden = true;
-        const panel = document.getElementById("addForm").closest("details");
-        panel.open = true;
+        document.getElementById("schoolEditor").open = true;
+        sidebar.dataset.editor = "open";
+        syncPhoneEditor();
+        updateLocationReady();
         showView("inputs");
-        panel.scrollIntoView({block: "nearest"});
+        sidebar.scrollTop = 0;
+        if (!phoneLayout.matches) document.getElementById("schoolEditor").scrollIntoView({block: "nearest"});
       }
-      document.getElementById("cancelEdit").onclick = () => openSchoolForm();
+      function backToSchools() {
+        closeSchoolForm();
+        showView("inputs");
+        sidebar.scrollTop = 0;
+      }
+      document.getElementById("cancelEdit").onclick = backToSchools;
+      document.getElementById("backToSchools").onclick = backToSchools;
+      document.getElementById("newSchoolBtn").onclick = () => openSchoolForm();
+      for (const scope of ["missing", "all"]) {
+        document.getElementById(scope + "Scope").onclick = () => {
+          mobileScope = scope;
+          for (const name of ["missing", "all"]) document.getElementById(name + "Scope").setAttribute("aria-pressed", String(name === scope));
+          rebuildList();
+        };
+      }
+      phoneLayout.addEventListener("change", () => { syncPhoneEditor(); updateVisibility(); rebuildFilters(); });
+      syncPhoneEditor();
+      if (phoneLayout.matches) showView("inputs");
       document.getElementById("pickBtn").onclick = () => {
         cancelLocationRequest();
         pickingLocation = true;
@@ -546,7 +701,7 @@
         showView("inputs");
       });
       map.on("contextmenu", e => {
-        document.getElementById("addForm").closest("details").open = true;
+        if (sidebar.dataset.editor !== "open") openSchoolForm();
         fillLocation(e.latlng.lat, e.latlng.lng, "Map point selected. Save to apply it.");
         stopPicking();
         showView("inputs");
@@ -557,7 +712,7 @@
       function makeIcon(color) {
         if (!icons[color]) icons[color] = L.divIcon({
           className: "school-marker",
-          html: `<div style="background:${color}"><img src="rotary-wheel.svg?v=1.1.0" width="22" height="22" alt="" /></div>`,
+          html: `<div style="background:${color}"><img src="rotary-wheel.svg?v=1.2.0" width="22" height="22" alt="" /></div>`,
           iconSize: [30, 30],
           iconAnchor: [15, 15],
           popupAnchor: [0, -15],
@@ -642,6 +797,7 @@
       }
 
       function fitSchools() {
+        if (phoneLayout.matches && app.dataset.view !== "map") { pendingFit = true; return; }
         const located = schools.filter(hasCoordinates);
         if (located.length) map.fitBounds(L.latLngBounds(located.map(s => [s.lat, s.lng])), {
           padding: [30, 30], maxZoom: 12, animate: false,
@@ -650,7 +806,7 @@
 
       function updateVisibility() {
         Object.values(markers).forEach(({marker, data}) => {
-          if (activeStages.has(data.stage)) {
+          if (phoneLayout.matches || activeStages.has(data.stage)) {
             if (!map.hasLayer(marker)) marker.addTo(map);
           } else if (map.hasLayer(marker)) map.removeLayer(marker);
         });
@@ -718,11 +874,14 @@
         const q = (query || document.getElementById("search").value || "")
           .trim()
           .toLowerCase();
+        document.getElementById("missingCount").textContent = schools.filter(s => !hasCoordinates(s)).length;
+        document.getElementById("allCount").textContent = schools.length;
         let shown = 0;
         const fragment = document.createDocumentFragment();
         const bySchool = new Map(Object.values(markers).map(m => [m.data, m.marker]));
         schools.forEach((s) => {
-          if (!activeStages.has(s.stage)) return;
+          if (!phoneLayout.matches && !activeStages.has(s.stage)) return;
+          if (phoneLayout.matches && mobileScope === "missing" && hasCoordinates(s)) return;
           if (q && !s.name.toLowerCase().includes(q)) return;
           shown++;
           const cfg = STAGES[s.stage];
@@ -733,13 +892,14 @@
             <span class="dot" style="background:${cfg.color}"></span>
             <button class="school-select" type="button">
               <div>${escapeHtml(s.name)}</div>
-              <div class="meta">${cfg.label}${located ? "" : " · Awaiting coordinates"}</div>
+              <div class="meta">${phoneLayout.matches ? (located ? "Location added" : "Needs a location") : cfg.label + (located ? "" : " · Awaiting coordinates")}</div>
             </button>
-            <button class="btn location-edit" type="button" aria-label="Edit location for ${escapeHtml(s.name)}">${located ? "Edit" : "Locate"}</button>
+            <button class="btn location-edit" type="button" aria-label="Edit location for ${escapeHtml(s.name)}">${located ? (phoneLayout.matches ? "Update" : "Edit") : "Add pin"}</button>
             <button class="del" type="button" aria-label="Remove ${escapeHtml(s.name)}" title="Remove locally">✕</button>`;
           item.querySelector(".school-select").onclick = () => {
             if (!located) { openSchoolForm(s); return; }
             stopPicking();
+            pendingFit = false;
             showView("map");
             map.invalidateSize({pan: false});
             map.flyTo([s.lat, s.lng], 12, { animate: !reducedMotion });
@@ -747,9 +907,10 @@
           };
           item.querySelector(".location-edit").onclick = () => openSchoolForm(s);
           item.querySelector(".del").onclick = () => {
-            if (editingSchool === s) openSchoolForm();
+            if (editingSchool === s) closeSchoolForm();
             schools = schools.filter(x => x !== s);
             rebuildMap();
+            persistSchoolChanges();
             showToast(`Removed "${s.name}" locally`);
           };
           fragment.appendChild(item);
@@ -757,7 +918,7 @@
         if (!shown) {
           const empty = document.createElement("div");
           empty.className = "hint";
-          empty.textContent = "No schools match. Try another name or enable more stages.";
+          empty.textContent = phoneLayout.matches ? "No schools match. Try another name, show all schools, or add a new school." : "No schools match. Try another name or enable more stages.";
           fragment.appendChild(empty);
         }
         listEl.appendChild(fragment);
@@ -792,7 +953,7 @@
       document.getElementById("f_location").addEventListener("keydown", e => {
         if (e.key === "Enter") { e.preventDefault(); useLocationText(); }
       });
-      for (const id of ["f_lat", "f_lng"]) document.getElementById(id).addEventListener("input", () => { cancelLocationRequest(); locationStatus.textContent = ""; });
+      for (const id of ["f_lat", "f_lng"]) document.getElementById(id).addEventListener("input", () => { cancelLocationRequest(); locationStatus.textContent = ""; updateLocationReady(); });
       document.getElementById("locateBtn").onclick = () => {
         if (!navigator.geolocation || !window.isSecureContext) {
           locationStatus.textContent = "Current location needs HTTPS and browser location support. Use a Maps link or Pick on map instead.";
@@ -817,13 +978,15 @@
       /* ---------- Add school form ---------- */
       document.getElementById("addForm").addEventListener("submit", (e) => {
         e.preventDefault();
-        const name = document.getElementById("f_name").value.trim();
+        const name = phoneLayout.matches && editingSchool ? editingSchool.name : document.getElementById("f_name").value.trim();
         const lat = coordinate(document.getElementById("f_lat").value);
         const lng = coordinate(document.getElementById("f_lng").value);
-        const stage = document.getElementById("f_stage").value;
-        const notes = document.getElementById("f_notes").value.trim();
+        const stage = phoneLayout.matches ? (editingSchool ? editingSchool.stage : "not_started") : document.getElementById("f_stage").value;
+        const notes = phoneLayout.matches && editingSchool ? editingSchool.notes : document.getElementById("f_notes").value.trim();
         if (!name || !hasCoordinates({lat, lng})) {
-          showToast("Enter a school name and valid latitude (−90 to 90) and longitude (−180 to 180)");
+          locationStatus.textContent = !name ? "Enter the school’s name before saving." : "Choose a location using one of the options above, or enter valid coordinates.";
+          if (!name) document.getElementById("f_name").focus();
+          showToast(!name ? "Enter the school name" : "Choose a valid location before saving");
           return;
         }
         const updated = Boolean(editingSchool);
@@ -831,10 +994,12 @@
         else schools.push({ name, lat, lng, stage, notes });
         rebuildMap();
         map.setView([lat, lng], 12, { animate: !reducedMotion });
-        openSchoolForm();
+        const saved = persistSchoolChanges();
+        closeSchoolForm();
         document.getElementById("f_stage").value = stage;
-        showView("map");
-        showToast(`${updated ? "Updated" : "Added"} "${name}" locally. Export CSV to keep it.`);
+        showView(phoneLayout.matches ? "inputs" : "map");
+        sidebar.scrollTop = 0;
+        showToast(`${updated ? "Location saved" : "School added"}${saved ? " on this device" : " for this session"}`);
       });
 
       /* ---------- Shared: turn raw CSV text into a schools array ---------- */
@@ -877,6 +1042,7 @@
           })
           .then((text) => {
             schools = schoolsFromCsvText(text);
+            restoreSavedSchools(text);
             activeStages = new Set(Object.keys(STAGES));
             rebuildMap();
             fitSchools();
@@ -900,7 +1066,7 @@
         reader.onload = (evt) => {
           try {
             const imported = schoolsFromCsvText(evt.target.result);
-            openSchoolForm();
+            closeSchoolForm();
             schools = imported;
             activeStages = new Set(Object.keys(STAGES));
             rebuildMap();
@@ -945,9 +1111,48 @@
         ).join("\n");
       }
 
-      /* ---------- CSV export ---------- */
-      document.getElementById("exportBtn").addEventListener("click", () => {
-        const blob = new Blob([exportCsv()], { type: "text/csv" });
+      /* ---------- Device saves and CSV export ---------- */
+      const SAVE_KEY = "selb-school-capture-v1";
+      let publishedCsv = null;
+      let recoveryCsv = null;
+      function deviceMessage(message) {
+        document.getElementById("deviceBanner").hidden = false;
+        document.getElementById("deviceStatus").textContent = message;
+        document.getElementById("recoveryExport").hidden = !recoveryCsv;
+      }
+      function restoreSavedSchools(baseCsv) {
+        publishedCsv = baseCsv;
+        try {
+          const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
+          if (!saved || typeof saved.base !== "string" || typeof saved.csv !== "string") return;
+          const restored = schoolsFromCsvText(saved.csv);
+          if (saved.base === baseCsv) {
+            schools = restored;
+            deviceMessage("Your saved changes are on this device. Download CSV for desktop updates.");
+          } else {
+            recoveryCsv = saved.csv;
+            deviceMessage("The published list has changed. Your earlier saved copy is available to download for review on desktop.");
+          }
+        } catch {
+          deviceMessage("Device storage is unavailable or its saved copy could not be read. Download CSV after making changes.");
+        }
+      }
+      function persistSchoolChanges() {
+        if (publishedCsv === null || recoveryCsv) {
+          deviceMessage("Changes are saved for this session. Download CSV before closing this page.");
+          return false;
+        }
+        try {
+          localStorage.setItem(SAVE_KEY, JSON.stringify({base: publishedCsv, csv: exportCsv()}));
+          deviceMessage("Saved on this device. Download CSV for desktop updates.");
+          return true;
+        } catch {
+          deviceMessage("Device storage is unavailable. Download CSV before closing this page.");
+          return false;
+        }
+      }
+      function downloadCsv(csv) {
+        const blob = new Blob([csv], { type: "text/csv" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
@@ -955,7 +1160,21 @@
         a.click();
         URL.revokeObjectURL(url);
         showToast("CSV downloaded");
-      });
+      }
+      for (const id of ["exportBtn", "mobileExport"]) document.getElementById(id).addEventListener("click", () => downloadCsv(exportCsv()));
+      document.getElementById("recoveryExport").onclick = () => { if (recoveryCsv) downloadCsv(recoveryCsv); };
+      document.getElementById("resetDevice").onclick = () => {
+        if (publishedCsv === null || !window.confirm("Reset this device to the published school list? Download any saved CSV you want to keep first.")) return;
+        try { localStorage.removeItem(SAVE_KEY); }
+        catch { showToast("Could not clear device storage. Download CSV to keep your changes."); return; }
+        recoveryCsv = null;
+        schools = schoolsFromCsvText(publishedCsv);
+        closeSchoolForm();
+        rebuildMap();
+        fitSchools();
+        document.getElementById("deviceBanner").hidden = true;
+        showToast("Device changes reset to the published list");
+      };
 
       /* ---------- Toast ---------- */
       let toastTimer;

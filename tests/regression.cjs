@@ -1,0 +1,44 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const path = require('node:path');
+const root = path.join(__dirname, '..');
+const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const script = html.match(/<script>\s*([\s\S]*?)<\/script>/)[1];
+// Compile the complete app, then isolate pure data helpers without browser stubs.
+new vm.Script(script);
+const helpers = script.slice(script.indexOf('      function coordinate'), script.indexOf('      function fitSchools')) +
+  script.slice(script.indexOf('      function schoolsFromCsvText'), script.indexOf('      /* ---------- Initial load')) +
+  script.slice(script.indexOf('      function parseCSV'), script.indexOf('      /* ---------- CSV export'));
+const context = vm.createContext({});
+vm.runInContext(`const STAGES = {not_started:{},training:{},screening:{},completed:{}}; let schools = []; ${helpers}`, context);
+const csv = fs.readFileSync(path.join(root, 'schools.csv'), 'utf8');
+context.input = csv;
+vm.runInContext('schools = schoolsFromCsvText(input)', context);
+assert.equal(vm.runInContext('schools.length', context), 205);
+assert.equal(vm.runInContext('schools.filter(hasCoordinates).length', context), 64);
+assert.equal(vm.runInContext('schools.filter(s => s.stage === "completed").length', context), 41);
+const exported = vm.runInContext('exportCsv()', context);
+context.input = exported;
+assert.equal(vm.runInContext('schoolsFromCsvText(input).length', context), 205);
+assert.equal(vm.runInContext('schoolsFromCsvText(input).filter(hasCoordinates).length', context), 64);
+assert.equal(vm.runInContext('schoolsFromCsvText(input).every((s,i) => s.name === schools[i].name && s.notes === schools[i].notes && s.stage === schools[i].stage)', context), true);
+context.input = '\uFEFFname,lat,lng,stage,notes\r\n"School ""A"", East",,,completed,"First line\nSecond ""quoted"" line"\r\n';
+vm.runInContext('schools = schoolsFromCsvText(input)', context);
+assert.equal(vm.runInContext('schools[0].name', context), 'School "A", East');
+assert.equal(vm.runInContext('schools[0].notes', context), 'First line\nSecond "quoted" line');
+context.input = vm.runInContext('exportCsv()', context);
+assert.equal(vm.runInContext('schoolsFromCsvText(input)[0].notes === schools[0].notes', context), true);
+assert.equal(vm.runInContext('hasCoordinates({lat:coordinate(""),lng:80})', context), false);
+assert.equal(vm.runInContext('hasCoordinates({lat:coordinate("7junk"),lng:80})', context), false);
+assert.equal(vm.runInContext('hasCoordinates({lat:91,lng:80})', context), false);
+context.input = 'name,lat,lng,stage\nTest,7,80,constructor';
+assert.equal(vm.runInContext('schoolsFromCsvText(input)[0].stage', context), 'not_started');
+context.input = 'name,notes\nTest,Missing headers';
+assert.throws(() => vm.runInContext('schoolsFromCsvText(input)', context), /CSV needs/);
+context.input = '"Unclosed';
+assert.throws(() => vm.runInContext('parseCSV(input)', context), /unclosed/);
+const version = fs.readFileSync(path.join(root, 'VERSION'), 'utf8').trim();
+assert.match(html, new RegExp(`application-version" content="${version.replaceAll('.', '\\.')}`));
+assert.ok(html.includes(`rotary-wheel.svg?v=${version}`));
+console.log('Passed: CSV coverage, export round-trip, quoted/multiline fields, coordinate validation, malformed input, app syntax and version.');

@@ -1,7 +1,7 @@
 name,lat,lng,stage,notes
 Rajakeeya Vidyalaya,7.2537698,80.3474445,completed,Kegalle; RC of Colombo Mid City; 77 screened / 29 needing glasses of 1235 students
 Kalaiwani T MV,,,completed,Kegalle; RC of Colombo Mid City; 52 screened / 19 needing glasses of 192 students
-Imbulana MV,,,completed,Kegalle; RC of Colombo Mid City; 323 screened / 45 needing glasses of 1541 students
+Imbulana MV,7.071095,80.254425,completed,Kegalle; RC of Colombo Mid City; 323 screened / 45 needing glasses of 1541 students
 Vaharaka MV,,,completed,Kegalle; RC of Colombo Mid City; 150 screened / 23 needing glasses of 610 students
 Sulaimaniya MV,,,screening,Kegalle; RC of Colombo Mid City; 194 screened / 42 needing glasses of 591 students
 Methodist College Nuwara Eliya,6.997375662,80.82108806,completed,Nuwara Eliya; RC of Mid City and Nuwara Eliya; 60 screened / 24 needing glasses of 458 students
@@ -19,7 +19,7 @@ Abbostleigh Tamil Vidyalayam,6.903090664,80.59694469,screening,Hatton; RC of Wat
 Agra Oya Tamil Vidyalayam,6.923766644,80.54779235,not_started,Hatton; RC of Wattala; approved only - no data yet
 Ambagamuwa Central College,7.022099381,80.49286632,completed,Hatton; RC of Wattala; 2 needing glasses of 684 students
 Ambagamuwa Primary,6.986768007,80.49422614,completed,Hatton; RC of Wattala; 17 needing glasses of 447 students
-Blackwater Tamil Vidyalayam,,,not_started,Hatton; RC of Wattala; approved only - no data yet
+Blackwater Tamil Vidyalayam,7.0051264,80.4978779,not_started,Hatton; RC of Wattala; approved only - no data yet
 Carfax Tamil Vidyalayam,,,not_started,Hatton; RC of Wattala; approved only - no data yet
 Carolina Tamil Vidyalayam,6.97154826,80.51615784,not_started,Hatton; RC of Wattala; approved only - no data yet
 Darawala Lower Division Tamil Vidyalayam,6.871024232,80.60967253,not_started,Hatton; RC of Wattala; approved only - no data yet
@@ -68,7 +68,7 @@ Sumangala Vidyalaya,8.12715663,80.43066995,completed,Anuradhapura; RC of Anuradh
 Siddartha Maha Vidyalaya,8.15305976,80.41215534,completed,Anuradhapura; RC of Anuradhapura; screening only - no teacher-training phase for this club; 1 needing glasses
 Dhammaloka Maha Vidyalaya,,,completed,Anuradhapura; RC of Anuradhapura; screening only - no teacher-training phase for this club; 10 needing glasses
 Rahula Vidyalaya Anuradhapura,8.323274662,80.40883186,completed,Anuradhapura; RC of Anuradhapura; screening only - no teacher-training phase for this club; 1 needing glasses
-Mahailluppallama School,,,completed,Anuradhapura; RC of Anuradhapura; screening only - no teacher-training phase for this club; 1 needing glasses
+Mahailluppallama School,8.11414,80.47287,completed,Anuradhapura; RC of Anuradhapura; screening only - no teacher-training phase for this club; 1 needing glasses
 Thorawewa Primary Vidyalaya,,,not_started,Mahawa E Z; RC of Athyugalpura; approved only - no data yet
 Kandubadagama Primary Vidyalaya,7.811562656,80.35372742,not_started,Mahawa E Z; RC of Athyugalpura; approved only - no data yet
 Tharanagollagama Kanishta Vidyalaya,7.992707333,80.43456445,not_started,Mahawa E Z; RC of Athyugalpura; approved only - no data yet
@@ -115,19 +115,19 @@ Boyagane Maha Vidyalaya,,,screening,Kurunegala; RC of Kurunegala; 25 needing gla
 Hizbullah Central College,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Mahinda Vidyalaya Kurunegala,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Potubowa Madya Maha Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
-Dutugemunu Madya Maha Vidyalaya,,,screening,Kurunegala; RC of Kurunegala; 29 needing glasses of 747 students
+Dutugemunu Madya Maha Vidyalaya,7.42427,80.32921,screening,Kurunegala; RC of Kurunegala; 29 needing glasses of 747 students
 Rathmalgoda Maha Vidyalaya,,,screening,Kurunegala; RC of Kurunegala; 48 screened / 28 needing glasses of 500 students
 Pimburuwellegama Madya Maha Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Denagamuwa Madya Maha Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Watareka Maha Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Kalugamuwa Maha Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Jaya Isuru Maha Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
-Sri Nishanka National School,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
+Sri Nishanka National School,7.424522,80.401756,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Rathnaloka Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Al Aqsa Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Al Azhar Maha Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
-Paragahadeniya National School,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
-Vishwoda Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
+Paragahadeniya National School,7.42451,80.47438,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
+Vishwoda Vidyalaya,7.46868,80.32625,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Mawathagama Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Weuda Roman Catholic College,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Udabaduluwa Maha Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
@@ -136,16 +136,16 @@ St Bernadette Model School,,,screening,Kurunegala; RC of Kurunegala; 48 screened
 Zahira Model Maha Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Bernadette Maha Vidyalaya,,,not_started,"Kurunegala; RC of Kurunegala; approved only - possible duplicate of St Bernadette Model School above, please verify"
 Saranankara Sangaroja Maha Vidyalaya,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
-Welagedara Central College,,,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
+Welagedara Central College,7.47793,80.3371,not_started,Kurunegala; RC of Kurunegala; approved only - no data yet
 Vannankerny Vethanandha Vidyalaya,,,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
 Mankerny RC Maha Vidyalaya,,,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
-Vantharumoolai Vishnu Maha Vidyalaya,,,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
+Vantharumoolai Vishnu Maha Vidyalaya,7.803306,81.5742952,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
 Kalkudah Namakal College,,,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
-Chenkalady Central College,,,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
+Chenkalady Central College,7.78665,81.59072,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
 Kinnaiyady Saraswathy Vidyalaya,,,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
 Murakkoddanchenai RKM,,,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
 Vantharamoolai Madya Maha Vidyalaya,,,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
-Kathiravely Maha Vidyalaya,,,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
+Kathiravely Maha Vidyalaya,8.2215303,81.4037669,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
 Pudhukudiyiruppu Vani Vidyalayam,,,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
 Santhively Sithivinayagar Vidyalaya,,,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
 Vakarai Maha Vidyalaya,,,not_started,Kalkudah Zone; RC of Batticaloa Heritage; approved only - no data yet
@@ -154,7 +154,7 @@ Vammivaddavan Vidyalayam,,,not_started,Kalkudah Zone; RC of Batticaloa Heritage;
 St. Anne's Balika Vidyalaya Wattala,6.9787344,79.8936523,screening,Wattala; RC of Wattala; 179 screened / 56 needing glasses of 1650 students
 St. Anthony's College Wattala,6.9848499,79.8930024,completed,Wattala; RC of Wattala; 20 needing glasses of 3050 students
 Roman Catholic Tamil Vidyalayam Wattala,,,completed,Wattala; RC of Wattala; 1000 students - distributed
-Al Asroff Muslim Vidyalaya,,,completed,Wattala; RC of Wattala; 1050 students - distributed
+Al Asroff Muslim Vidyalaya,7.00564,79.89686,completed,Wattala; RC of Wattala; 1050 students - distributed
 Arun Manickawasagam Hindu College,,,completed,Wattala; RC of Wattala; 10 needing glasses of 500 students
 Sri Siddartha Primary College,,,completed,Wattala; RC of Wattala; 150 students - distributed
 Welegoda Muslim Vidyalaya,,,completed,Wattala; RC of Wattala; 4 needing glasses of 150 students
@@ -164,7 +164,7 @@ Bandaranayake Maha Vidyalaya,,,completed,Wattala; RC of Wattala; 6 needing glass
 Nagasena Maha Vidyalaya,,,completed,Wattala; RC of Wattala; 3 needing glasses
 Sri Ponnambalawaneswarar Hindu Religious School,,,screening,KochichiKade; RC of Wattala; near Sivam Temple; 80 screened / 30 needing glasses of 160 students
 Gnaneesara Primary Vidyalaya,,,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
-Neboda Maha Vidyalaya,,,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
+Neboda Maha Vidyalaya,6.5920752,80.0912815,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
 Maggona St. Mary's College,6.5014714,79.9812406,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
 Padagoda Maha Vidyalaya,,,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
 Dibbadda Gunawardena Primary School,,,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
@@ -173,29 +173,29 @@ Bharathi Maha Vidyalaya,,,not_started,Kalutara; RC Colombo Mid Town; approved on
 Gamagoda Kanishta Vidyalaya,,,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
 Kidsway Pre School,,,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
 Roman Catholic School Kalutara,,,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
-Wadduwa Madya Jathika Pasala,,,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
+Wadduwa Madya Jathika Pasala,6.660266,79.936966,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
 Wadduwa Balika Vidyalaya,,,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
 Pohoddaramulla Primary Vidyalaya,,,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
 Wadduwa YMBA Pera Pasala,,,not_started,Kalutara; RC Colombo Mid Town; approved only - no data yet
 Prince of Wales' College,6.7851531,79.8834013,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
-Princess of Wales' College,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet; could not confirm coordinates
-Moratuwa Maha Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
-De Zoysa Navodya Maha Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
-Sri Sunandopananda Maha Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
-Idibadda Dharmaratna Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
+Princess of Wales' College,6.78443,79.88408,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
+Moratuwa Maha Vidyalaya,6.77836,79.88486,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
+De Zoysa Navodya Maha Vidyalaya,6.8045771,79.8857921,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
+Sri Sunandopananda Maha Vidyalaya,6.74158,79.89474,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
+Idibadda Dharmaratna Vidyalaya,6.7780367,79.902959,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 Laxapathiiya Sishkadana Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 Sri Rahula Maha Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 Methodist High School Moratuwa,6.7808064,79.8974866,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 Koralawella Roman Catholic Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
-Janajaya Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
+Janajaya Vidyalaya,6.76717,79.88587,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 St Sebastian Balika Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 St. Anthony's College Moratuwa,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 Lanka Sabha Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 Podu Jaya Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 Bodhi Raja Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
-Weera Puranappu Adarsha Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
+Weera Puranappu Adarsha Vidyalaya,6.77858,79.88279,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 Rawatawatta Roman Catholic School,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
-Rawatawatte Methodist College,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
+Rawatawatte Methodist College,6.788724,79.8830578,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 Uyana Kanishta Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 Selina Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 Willorawatta Buddhist School,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
@@ -203,4 +203,4 @@ Katukurunda St Mary's College,,,not_started,Moratuwa; RC of Moratuwa; approved o
 Sri Sunandopananda Primary Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 Sugatha Darmadara Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
 Vishwaloka Vidyalaya,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
-Arfath Muslim School,,,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet
+Arfath Muslim School,6.7214205,79.9021992,not_started,Moratuwa; RC of Moratuwa; approved only - no data yet

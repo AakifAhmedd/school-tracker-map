@@ -16,12 +16,26 @@ const csv = fs.readFileSync(path.join(root, 'schools.csv'), 'utf8');
 context.input = csv;
 vm.runInContext('schools = schoolsFromCsvText(input)', context);
 assert.equal(vm.runInContext('schools.length', context), 205);
-assert.equal(vm.runInContext('schools.filter(hasCoordinates).length', context), 64);
+assert.equal(vm.runInContext('schools.filter(hasCoordinates).length', context), 87);
 assert.equal(vm.runInContext('schools.filter(s => s.stage === "completed").length', context), 41);
+// Every researched coordinate must have matching, dated source evidence.
+context.evidence = fs.readFileSync(path.join(root, 'coordinate-sources.csv'), 'utf8');
+const evidence = JSON.parse(vm.runInContext('JSON.stringify(parseCSV(evidence))', context));
+assert.equal(evidence.length, 24); // Header + 23 researched schools.
+assert.equal(new Set(evidence.slice(1).map(row => row[0])).size, 23);
+const schoolData = JSON.parse(vm.runInContext('JSON.stringify(schools)', context));
+for (const [name, lat, lng, source, corroboration, notes, checked] of evidence.slice(1)) {
+  const school = schoolData.find(s => s.name === name);
+  assert.ok(school, `Missing researched school: ${name}`);
+  assert.equal(school.lat, Number(lat));
+  assert.equal(school.lng, Number(lng));
+  assert.ok(school.lat >= 5.8 && school.lat <= 9.9 && school.lng >= 79.5 && school.lng <= 82);
+  assert.ok(source.startsWith('https://') && notes.length > 0 && checked === '2026-10-10');
+}
 const exported = vm.runInContext('exportCsv()', context);
 context.input = exported;
 assert.equal(vm.runInContext('schoolsFromCsvText(input).length', context), 205);
-assert.equal(vm.runInContext('schoolsFromCsvText(input).filter(hasCoordinates).length', context), 64);
+assert.equal(vm.runInContext('schoolsFromCsvText(input).filter(hasCoordinates).length', context), 87);
 assert.equal(vm.runInContext('schoolsFromCsvText(input).every((s,i) => s.name === schools[i].name && s.notes === schools[i].notes && s.stage === schools[i].stage)', context), true);
 context.input = '\uFEFFname,lat,lng,stage,notes\r\n"School ""A"", East",,,completed,"First line\nSecond ""quoted"" line"\r\n';
 vm.runInContext('schools = schoolsFromCsvText(input)', context);

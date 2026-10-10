@@ -1,6 +1,6 @@
 # School Programme Tracker — Sri Lanka
 
-SELB (Sharp Eyes Learn Better) tracks schools through Not Started, Teacher Training, Vision Screening, and Completed. Current version: **1.0.1**.
+SELB (Sharp Eyes Learn Better) tracks schools through Not Started, Teacher Training, Vision Screening, and Completed. Current version: **1.1.0**.
 
 ## Live site
 The live GitHub Pages map is at
@@ -43,3 +43,11 @@ On 2026-10-10, school-specific map listings and school/Ministry identity records
 [coordinate-sources.csv](coordinate-sources.csv) records each added coordinate, source link, available corroboration, locality/alias reasoning, and check date. These are published school pins or representative campus/building points, not surveyed entrances. Some have a single coordinate source; the evidence notes identify those. OpenStreetMap-derived records are attributed through their linked sources; © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), [ODbL](https://opendatacommons.org/licenses/odbl/).
 
 Ambiguous names, conflicting pins, and potential duplicate records remain unresolved, including Gallahara/Gallehera and the two Bernadette entries. No town-centre coordinates were substituted for school locations. The Princess of Wales entry's obsolete “could not confirm coordinates” note was removed after its school pin was matched.
+
+## Phone inputs and location editing — 1.1.0
+
+On screens up to 760px, switch between **Map** and **Inputs** tabs. Select **Locate** or **Edit** beside a school to update that record, or expand **Add a school** for a new record. Paste coordinates or a Google Maps URL, use **Use current location** when at the school, or choose **Pick on map** and tap the location. Save changes, then **Update data → Export CSV** to retain them using the PR workflow. Nothing is written to GitHub by the browser.
+
+Coordinate-bearing Google Maps URLs fill the latitude/longitude fields. Place-pin coordinates take priority over the map camera centre; camera-only URLs display a check-location reminder. Short links and name-only links offer **Open Google Maps** with instructions to copy the full URL or the pin’s coordinates. This static app does not resolve opaque short links or geocode names.
+
+Current location runs only when requested and uses the browser’s permission prompt on HTTPS (or localhost). It reports estimated accuracy and handles denial, timeout, and unavailable location. Verify the point before saving; no location is stored until the school form is saved locally. See [Google Maps URL documentation](https://developers.google.com/maps/documentation/urls/get-started) and [browser geolocation documentation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition).

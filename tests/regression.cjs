@@ -10,7 +10,7 @@ new vm.Script(script);
 const helpers = script.slice(script.indexOf('      function coordinate'), script.indexOf('      function fitSchools')) +
   script.slice(script.indexOf('      function schoolsFromCsvText'), script.indexOf('      /* ---------- Initial load')) +
   script.slice(script.indexOf('      function parseCSV'), script.indexOf('      /* ---------- CSV export'));
-const context = vm.createContext({});
+const context = vm.createContext({URL});
 vm.runInContext(`const STAGES = {not_started:{},training:{},screening:{},completed:{}}; let schools = []; ${helpers}`, context);
 const csv = fs.readFileSync(path.join(root, 'schools.csv'), 'utf8');
 context.input = csv;
@@ -52,6 +52,25 @@ context.input = 'name,notes\nTest,Missing headers';
 assert.throws(() => vm.runInContext('schoolsFromCsvText(input)', context), /CSV needs/);
 context.input = '"Unclosed';
 assert.throws(() => vm.runInContext('parseCSV(input)', context), /unclosed/);
+// Coordinate input accepts public Maps formats, prioritises place pins, and rejects unsafe links.
+for (const [input, lat, lng, source] of [
+  [' 7.87, 80.77 ', 7.87, 80.77, 'coordinates'],
+  ['https://www.google.com/maps/search/?api=1&query=7.87%2C80.77', 7.87, 80.77, 'pin'],
+  ['https://maps.google.com/?q=-33.86,151.2', -33.86, 151.2, 'pin'],
+  ['https://www.google.lk/maps/place/Test/@8,81,15z/data=!3d7.87!4d80.77', 7.87, 80.77, 'pin'],
+  ['https://www.google.com/maps/@7.87,80.77,15z', 7.87, 80.77, 'map view'],
+  ['https://www.google.com/maps?ll=7.87,80.77', 7.87, 80.77, 'map view'],
+]) {
+  context.input = input;
+  assert.deepEqual(JSON.parse(vm.runInContext('JSON.stringify(locationFromText(input))', context)), {lat, lng, source});
+}
+for (const input of ['91,80', '7,181', 'not coordinates', 'https://evil.example/maps?q=7,80',
+  'javascript:alert(1)', 'https://google.com.evil.example/maps?q=7,80', 'https://user:pass@www.google.com/maps?q=7,80',
+  'https://maps.app.goo.gl/test', 'https://www.google.com/maps?q=School', 'https://www.google.com/maps?q=%E0%A4%A']) {
+  context.input = input;
+  assert.equal(vm.runInContext('locationFromText(input)', context), null);
+}
+require('./location-flow.cjs');
 const version = fs.readFileSync(path.join(root, 'VERSION'), 'utf8').trim();
 assert.match(html, new RegExp(`application-version" content="${version.replaceAll('.', '\\.')}`));
 assert.ok(html.includes(`rotary-wheel.svg?v=${version}`));

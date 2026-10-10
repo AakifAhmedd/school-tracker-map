@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="application-version" content="1.0.1" />
+    <meta name="application-version" content="1.1.0" />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link rel="preconnect" href="https://a.tile.openstreetmap.fr" />
     <link rel="preconnect" href="https://b.tile.openstreetmap.fr" />
     <link rel="preconnect" href="https://c.tile.openstreetmap.fr" />
-    <link rel="preload" href="rotary-wheel.svg?v=1.0.1" as="image" />
+    <link rel="preload" href="rotary-wheel.svg?v=1.1.0" as="image" />
     <title>SELB - Sharp Eyes Learn Better</title>
     <link rel="icon" type="image/png" href="https://brandcenter.rotary.org/dist/brandcenter/favicon-32x32.png?v=dcf63410fce77e4a51ba11a9b721bd3e"/>
     <link
@@ -281,27 +281,33 @@
       #toast.show {
         opacity: 1;
       }
+      .mobile-tabs { display: none; }
+      .app { position: relative; }
+      .location-tools { display: flex; flex-wrap: wrap; gap: 6px; }
+      .location-tools .btn { flex: 1; min-height: 40px; }
+      #locationStatus { min-height: 16px; }
+      #openMaps[hidden], #pickHint[hidden], #cancelEdit[hidden] { display: none; }
+      #pickHint { position: absolute; top: 12px; left: 352px; z-index: 700; max-width: calc(100% - 412px); padding: 10px; background: white; border-radius: 8px; box-shadow: var(--shadow); font-size: 13px; }
+      .app.picking #map { cursor: crosshair; }
+      #sidebar label { font-size: 11px; font-weight: 600; }
+      .location-edit { align-self: center; font-size: 11px; padding: 7px; }
+      .btn:disabled { opacity: .6; cursor: wait; }
       @media (max-width: 760px) {
-        #sidebar {
-          position: absolute;
-          z-index: 1000;
-          height: 100%;
-          width: 88%;
-          transform: translateX(-100%);
-          transition: transform 0.2s;
-        }
-        #sidebar.open {
-          transform: translateX(0);
-        }
-        .app {
-          position: relative;
-        }
-        #menuBtn {
-          display: inline-block !important;
-        }
-      }
-      #menuBtn {
-        display: none;
+        body { height: 100dvh; }
+        header { padding: 10px 14px; gap: 8px; }
+        .counts { gap: 5px; }
+        .count-pill { font-size: 10px; padding: 4px 6px; }
+        .mobile-tabs { display: flex; flex: none; gap: 4px; padding: 6px 12px; background: var(--panel); border-bottom: 1px solid var(--line); }
+        .mobile-tabs button { flex: 1; min-height: 44px; font: inherit; font-size: 14px; border: 0; border-radius: 8px; background: var(--paper); color: var(--ink); }
+        .mobile-tabs button[aria-selected="true"] { background: var(--accent); color: white; font-weight: 600; }
+        #pickHint { left: 12px; max-width: calc(100% - 72px); }
+        #sidebar { display: none; width: 100%; border-right: 0; }
+        .app[data-view="inputs"] #sidebar { display: flex; }
+        .app[data-view="inputs"] #map, .app[data-view="inputs"] #pickHint { display: none; }
+        #sidebar input, #sidebar select, #search { font-size: 16px; min-height: 44px; }
+        .btn { min-height: 44px; }
+        .filter-row { min-height: 44px; }
+        #toast { bottom: max(16px, env(safe-area-inset-bottom)); width: max-content; max-width: calc(100% - 24px); }
       }
       .school-marker > div {
         width: 30px; height: 30px; border: 2px solid white;
@@ -324,15 +330,18 @@
   <body>
     <header>
       <div style="display: flex; align-items: center; gap: 10px">
-        <button class="btn" id="menuBtn" aria-label="Toggle schools panel" aria-controls="sidebar" aria-expanded="false">☰</button>
-        <h1>Sharp Eyes Learn Better<span>School Program Tracker <small class="version">v1.0.1</small></span></h1>
+        <h1>Sharp Eyes Learn Better<span>School Program Tracker <small class="version">v1.1.0</small></span></h1>
       </div>
       <div class="counts" id="counts"></div>
     </header>
 
     <div id="loadStatus" role="status">Loading schools…</div>
-    <div class="app">
-      <div id="sidebar">
+    <nav class="mobile-tabs" role="tablist" aria-label="School tracker views">
+      <button id="mapTab" type="button" role="tab" aria-controls="map" aria-selected="true">Map</button>
+      <button id="inputsTab" type="button" role="tab" aria-controls="sidebar" aria-selected="false" tabindex="-1">Inputs</button>
+    </nav>
+    <div class="app" data-view="map">
+      <div id="sidebar" role="tabpanel" aria-labelledby="inputsTab">
   <div class="sb-section">
     <h2>Search</h2>
     <input id="search" type="text" aria-label="Search schools" placeholder="Find a school by name…" />
@@ -379,12 +388,22 @@
   </details>
 
   <details class="sb-section" style="border-bottom: none;">
-    <summary>Add a school</summary>
+    <summary id="formTitle">Add a school</summary>
     <form id="addForm">
       <input id="f_name" aria-label="School name" placeholder="School name" required />
+      <label for="f_location">Google Maps link or coordinates</label>
+      <input id="f_location" placeholder="Paste a Maps link or 7.87, 80.77" autocomplete="off" aria-describedby="locationStatus" />
+      <div class="location-tools">
+        <button class="btn" id="useLink" type="button">Use link / coordinates</button>
+        <button class="btn" id="locateBtn" type="button">Use current location</button>
+        <button class="btn" id="pickBtn" type="button">Pick on map</button>
+      </div>
+      <a id="openMaps" class="btn" target="_blank" rel="noopener noreferrer" hidden>Open Google Maps</a>
+      <div class="hint" id="locationStatus" role="status"></div>
+      <label for="f_lat">Latitude / longitude</label>
       <div class="row2">
-        <input id="f_lat" aria-label="Latitude" placeholder="Latitude" required />
-        <input id="f_lng" aria-label="Longitude" placeholder="Longitude" required />
+        <input id="f_lat" aria-label="Latitude" placeholder="Latitude" inputmode="decimal" required />
+        <input id="f_lng" aria-label="Longitude" placeholder="Longitude" inputmode="decimal" required />
       </div>
       <select id="f_stage" aria-label="Programme stage">
         <option value="not_started">Not Started</option>
@@ -393,17 +412,19 @@
         <option value="completed">Completed</option>
       </select>
       <input id="f_notes" aria-label="Notes" placeholder="Notes (optional)" />
-      <button class="btn primary" type="submit">Add to map</button>
+      <button class="btn primary" id="saveSchool" type="submit">Add to map</button>
+      <button class="btn" id="cancelEdit" type="button" hidden>Cancel editing</button>
     </form>
     <div class="hint">
-      Tip: right-click any spot on the map to copy its coordinates.
-      Schools added here are local-only &mdash; use Export CSV and add the
-      row to schools.csv via a PR to make it permanent.
+      Choose a location, then save. On a phone, use Pick on map and tap the school. Current location is useful when you are at the school.
+      Changes here are local-only &mdash; use Export CSV and replace
+      schools.csv via a PR to make it permanent.
     </div>
   </details>
 </div>
 
-<div id="map" aria-label="School locations"></div>
+<div id="map" role="tabpanel" aria-labelledby="mapTab" aria-label="School locations"></div>
+<div id="pickHint" hidden>Tap the school’s location on the map. <button class="btn" id="cancelPick" type="button">Cancel</button></div>
 </div>
 
     <div id="toast" role="status"></div>
@@ -448,13 +469,87 @@
         if (!map.hasLayer(tiles)) tiles.addTo(map);
       }
 
-      map.on("contextmenu", (e) => {
-        document.querySelector("#addForm").closest("details").open = true;
-        document.getElementById("sidebar").classList.add("open");
-        document.getElementById("menuBtn").setAttribute("aria-expanded", "true");
-        document.getElementById("f_lat").value = e.latlng.lat.toFixed(5);
-        document.getElementById("f_lng").value = e.latlng.lng.toFixed(5);
-        showToast("Coordinates copied into the Add School form");
+      let pickingLocation = false;
+      let editingSchool = null;
+      let locationRequest = 0;
+      const app = document.querySelector(".app");
+      const locationStatus = document.getElementById("locationStatus");
+      function showView(view) {
+        app.dataset.view = view;
+        for (const name of ["map", "inputs"]) {
+          const tab = document.getElementById(name + "Tab");
+          tab.setAttribute("aria-selected", String(name === view));
+          tab.tabIndex = name === view ? 0 : -1;
+        }
+        if (view === "map") requestAnimationFrame(() => map.invalidateSize({pan: false}));
+      }
+      for (const view of ["map", "inputs"]) {
+        document.getElementById(view + "Tab").onclick = () => showView(view);
+      }
+      document.querySelector(".mobile-tabs").onkeydown = e => {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
+        e.preventDefault();
+        const view = e.key === "Home" ? "map" : e.key === "End" ? "inputs" : app.dataset.view === "map" ? "inputs" : "map";
+        showView(view);
+        document.getElementById(view + "Tab").focus();
+      };
+      window.matchMedia("(max-width: 760px)").addEventListener("change", () => requestAnimationFrame(() => map.invalidateSize({pan: false})));
+      function stopPicking() {
+        pickingLocation = false;
+        app.classList.remove("picking");
+        document.getElementById("pickHint").hidden = true;
+      }
+      function cancelLocationRequest() {
+        locationRequest++;
+        const button = document.getElementById("locateBtn");
+        button.disabled = false;
+        button.textContent = "Use current location";
+      }
+      function fillLocation(lat, lng, message) {
+        if (!hasCoordinates({lat, lng})) return;
+        cancelLocationRequest();
+        document.getElementById("f_lat").value = lat.toFixed(6);
+        document.getElementById("f_lng").value = lng.toFixed(6);
+        locationStatus.textContent = message;
+      }
+      function openSchoolForm(school = null) {
+        cancelLocationRequest();
+        stopPicking();
+        editingSchool = school;
+        document.getElementById("addForm").reset();
+        for (const key of ["name", "lat", "lng", "stage", "notes"]) {
+          if (school) document.getElementById("f_" + key).value = key === "lat" || key === "lng" ? (Number.isFinite(school[key]) ? school[key] : "") : school[key];
+        }
+        document.getElementById("formTitle").textContent = school ? "Edit school location" : "Add a school";
+        document.getElementById("saveSchool").textContent = school ? "Save changes" : "Add to map";
+        document.getElementById("cancelEdit").hidden = !school;
+        locationStatus.textContent = "";
+        document.getElementById("openMaps").hidden = true;
+        const panel = document.getElementById("addForm").closest("details");
+        panel.open = true;
+        showView("inputs");
+        panel.scrollIntoView({block: "nearest"});
+      }
+      document.getElementById("cancelEdit").onclick = () => openSchoolForm();
+      document.getElementById("pickBtn").onclick = () => {
+        cancelLocationRequest();
+        pickingLocation = true;
+        app.classList.add("picking");
+        document.getElementById("pickHint").hidden = false;
+        showView("map");
+      };
+      document.getElementById("cancelPick").onclick = () => { stopPicking(); showView("inputs"); };
+      map.on("click", e => {
+        if (!pickingLocation) return;
+        fillLocation(e.latlng.lat, e.latlng.lng, "Map point selected. Save to apply it.");
+        stopPicking();
+        showView("inputs");
+      });
+      map.on("contextmenu", e => {
+        document.getElementById("addForm").closest("details").open = true;
+        fillLocation(e.latlng.lat, e.latlng.lng, "Map point selected. Save to apply it.");
+        stopPicking();
+        showView("inputs");
       });
 
       // One decoded logo asset and four reusable icons, rather than a large SVG per school.
@@ -462,7 +557,7 @@
       function makeIcon(color) {
         if (!icons[color]) icons[color] = L.divIcon({
           className: "school-marker",
-          html: `<div style="background:${color}"><img src="rotary-wheel.svg?v=1.0.1" width="22" height="22" alt="" /></div>`,
+          html: `<div style="background:${color}"><img src="rotary-wheel.svg?v=1.1.0" width="22" height="22" alt="" /></div>`,
           iconSize: [30, 30],
           iconAnchor: [15, 15],
           popupAnchor: [0, -15],
@@ -509,6 +604,41 @@
       function hasCoordinates(s) {
         return Number.isFinite(s.lat) && Number.isFinite(s.lng) &&
           Math.abs(s.lat) <= 90 && Math.abs(s.lng) <= 180;
+      }
+
+      function googleMapsUrl(text) {
+        try {
+          const url = new URL(text.trim());
+          if (url.protocol !== "https:" || url.username || url.password) return null;
+          const host = url.hostname;
+          const googleHost = /^(?:www\.|maps\.)?google\.(?:com|lk|co\.uk|co\.in|com\.au)$/.test(host);
+          return host === "maps.app.goo.gl" || (host === "goo.gl" && url.pathname.startsWith("/maps")) || (googleHost && (host.startsWith("maps.") || url.pathname.startsWith("/maps"))) ? url : null;
+        } catch { return null; }
+      }
+      function locationFromText(text) {
+        const number = "[-+]?(?:\\d+(?:\\.\\d+)?|\\.\\d+)";
+        const pair = new RegExp("^\\s*(" + number + ")\\s*,\\s*(" + number + ")\\s*$");
+        function result(match, source) {
+          if (!match) return null;
+          const point = {lat: Number(match[1]), lng: Number(match[2]), source};
+          return hasCoordinates(point) ? point : null;
+        }
+        const plain = result(text.match(pair), "coordinates");
+        if (plain) return plain;
+        const url = googleMapsUrl(text);
+        if (!url) return null;
+        let decoded;
+        try { decoded = decodeURIComponent(url.href); } catch { return null; }
+        // Prefer the actual place pin over the @ camera position in place URLs.
+        const pin = result(decoded.match(new RegExp("!3d(" + number + ")!4d(" + number + ")")), "pin");
+        if (pin) return pin;
+        for (const key of ["query", "q", "destination"]) {
+          const point = result((url.searchParams.get(key) || "").match(pair), "pin");
+          if (point) return point;
+        }
+        const center = result(decoded.match(new RegExp("@(" + number + "),(" + number + "),")), "map view");
+        if (center) return center;
+        return result((url.searchParams.get("ll") || url.searchParams.get("center") || "").match(pair), "map view");
       }
 
       function fitSchools() {
@@ -605,17 +735,19 @@
               <div>${escapeHtml(s.name)}</div>
               <div class="meta">${cfg.label}${located ? "" : " · Awaiting coordinates"}</div>
             </button>
+            <button class="btn location-edit" type="button" aria-label="Edit location for ${escapeHtml(s.name)}">${located ? "Edit" : "Locate"}</button>
             <button class="del" type="button" aria-label="Remove ${escapeHtml(s.name)}" title="Remove locally">✕</button>`;
           item.querySelector(".school-select").onclick = () => {
-            if (!located) { showToast("Add coordinates to schools.csv to place this school on the map"); return; }
+            if (!located) { openSchoolForm(s); return; }
+            stopPicking();
+            showView("map");
+            map.invalidateSize({pan: false});
             map.flyTo([s.lat, s.lng], 12, { animate: !reducedMotion });
             bySchool.get(s).openPopup();
-            if (window.matchMedia("(max-width: 760px)").matches) {
-              document.getElementById("sidebar").classList.remove("open");
-              document.getElementById("menuBtn").setAttribute("aria-expanded", "false");
-            }
           };
+          item.querySelector(".location-edit").onclick = () => openSchoolForm(s);
           item.querySelector(".del").onclick = () => {
+            if (editingSchool === s) openSchoolForm();
             schools = schools.filter(x => x !== s);
             rebuildMap();
             showToast(`Removed "${s.name}" locally`);
@@ -636,6 +768,52 @@
         .getElementById("search")
         .addEventListener("input", () => rebuildList());
 
+      /* ---------- Location input ---------- */
+      function useLocationText() {
+        const text = document.getElementById("f_location").value.trim();
+        const url = googleMapsUrl(text);
+        const link = document.getElementById("openMaps");
+        link.hidden = !url;
+        if (url) link.href = url.href;
+        const point = locationFromText(text);
+        if (point) {
+          fillLocation(point.lat, point.lng, point.source === "map view" ? "Using the link’s map centre. Check it matches the school before saving." : "Coordinates filled. Check the location, then save.");
+        } else {
+          locationStatus.textContent = url ? "Open this link in Google Maps. Copy the full browser URL, or tap/hold the school pin and copy its latitude, longitude here." : "Paste a Google Maps link containing coordinates, or a latitude, longitude pair (for example 7.87, 80.77).";
+        }
+      }
+      document.getElementById("useLink").onclick = useLocationText;
+      document.getElementById("f_location").addEventListener("input", () => {
+        cancelLocationRequest();
+        document.getElementById("openMaps").hidden = true;
+        locationStatus.textContent = "";
+      });
+      document.getElementById("f_location").addEventListener("change", useLocationText);
+      document.getElementById("f_location").addEventListener("keydown", e => {
+        if (e.key === "Enter") { e.preventDefault(); useLocationText(); }
+      });
+      for (const id of ["f_lat", "f_lng"]) document.getElementById(id).addEventListener("input", () => { cancelLocationRequest(); locationStatus.textContent = ""; });
+      document.getElementById("locateBtn").onclick = () => {
+        if (!navigator.geolocation || !window.isSecureContext) {
+          locationStatus.textContent = "Current location needs HTTPS and browser location support. Use a Maps link or Pick on map instead.";
+          return;
+        }
+        cancelLocationRequest();
+        const request = locationRequest;
+        const button = document.getElementById("locateBtn");
+        button.disabled = true;
+        button.textContent = "Finding location…";
+        locationStatus.textContent = "Allow location access when your browser asks.";
+        navigator.geolocation.getCurrentPosition(position => {
+          if (request !== locationRequest) return;
+          fillLocation(position.coords.latitude, position.coords.longitude, `Current location filled (accuracy about ${Math.round(position.coords.accuracy)} m). Check you are at the school, then save.`);
+        }, error => {
+          if (request !== locationRequest) return;
+          cancelLocationRequest();
+          locationStatus.textContent = error.code === 1 ? "Location access was denied. Allow it in browser settings, or use a Maps link / Pick on map." : error.code === 3 ? "Location lookup timed out. Try again, or use a Maps link / Pick on map." : "Current location is unavailable. Try again, or use a Maps link / Pick on map.";
+        }, {enableHighAccuracy: true, timeout: 15000, maximumAge: 0});
+      };
+
       /* ---------- Add school form ---------- */
       document.getElementById("addForm").addEventListener("submit", (e) => {
         e.preventDefault();
@@ -648,12 +826,15 @@
           showToast("Enter a school name and valid latitude (−90 to 90) and longitude (−180 to 180)");
           return;
         }
-        schools.push({ name, lat, lng, stage, notes });
+        const updated = Boolean(editingSchool);
+        if (editingSchool) Object.assign(editingSchool, {name, lat, lng, stage, notes});
+        else schools.push({ name, lat, lng, stage, notes });
         rebuildMap();
         map.setView([lat, lng], 12, { animate: !reducedMotion });
-        e.target.reset();
+        openSchoolForm();
         document.getElementById("f_stage").value = stage;
-        showToast(`Added "${name}"`);
+        showView("map");
+        showToast(`${updated ? "Updated" : "Added"} "${name}" locally. Export CSV to keep it.`);
       });
 
       /* ---------- Shared: turn raw CSV text into a schools array ---------- */
@@ -718,7 +899,9 @@
         const reader = new FileReader();
         reader.onload = (evt) => {
           try {
-            schools = schoolsFromCsvText(evt.target.result);
+            const imported = schoolsFromCsvText(evt.target.result);
+            openSchoolForm();
+            schools = imported;
             activeStages = new Set(Object.keys(STAGES));
             rebuildMap();
             fitSchools();
@@ -772,12 +955,6 @@
         a.click();
         URL.revokeObjectURL(url);
         showToast("CSV downloaded");
-      });
-
-      /* ---------- Mobile menu ---------- */
-      document.getElementById("menuBtn").addEventListener("click", () => {
-        const open = document.getElementById("sidebar").classList.toggle("open");
-        document.getElementById("menuBtn").setAttribute("aria-expanded", String(open));
       });
 
       /* ---------- Toast ---------- */

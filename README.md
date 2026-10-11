@@ -1,6 +1,6 @@
 # School Programme Tracker — Sri Lanka
 
-SELB (Sharp Eyes Learn Better) tracks schools through Not Started, Teacher Training, Vision Screening, and Completed. Current version: **1.2.1**.
+SELB (Sharp Eyes Learn Better) tracks schools through Not Started, Teacher Training, Vision Screening, and Completed. Current version: **1.2.2**.
 
 ## Live site
 The live GitHub Pages map is at
@@ -28,7 +28,7 @@ Either run a local server (e.g. `python3 -m http.server` in this folder and visi
 
 All CSV schools appear in the list and stage totals. Only schools with valid coordinates appear on the map; the sidebar reports map coverage and labels schools awaiting coordinates. CSV export retains these schools, including blank coordinates. Unknown or blank stages display/export as `not_started`. No school data is changed automatically on GitHub.
 
-The map fits the school locations before attaching its tile layer, with a 1.5-second fallback when CSV loading is slow. Stage filters reuse markers; Rotary icons share one cached SVG asset. Tiles load after panning stops and keep a smaller buffer. The plain basemap uses OpenFreeMap vector tiles and the pinned Leaflet.VectorGrid 1.3.0 renderer. Roads, water and subtle building footprints remain; POIs, labels and landscape shading are omitted. Tile speed depends on OpenFreeMap and the visitor's connection. A failed basemap configuration load offers Retry map while school pins remain available.
+The map fits the school locations before attaching its tile layer, with a 1.5-second fallback when CSV loading is slow. Stage filters reuse markers; Rotary icons share one cached SVG asset. Tiles load after panning stops and keep a smaller buffer. The blue-green basemap uses OpenFreeMap vector tiles and the pinned Leaflet.VectorGrid 1.3.0 renderer. Roads, water and subtle building footprints remain, with country/province labels in the overview and city/town names as you zoom. POIs and landscape shading are omitted. Tile speed depends on OpenFreeMap and the visitor's connection. A failed basemap configuration load offers Retry map while school pins remain available.
 
 Update data and Add a school are expandable panels. Saved add/edit/remove changes are retained on this device when browser storage is available; imported previews remain session-only until saved. Export the CSV and use the PR workflow to update the shared list. Keep `rotary-wheel.svg` beside `index.html` and `schools.csv`.
 
@@ -63,3 +63,9 @@ Saved changes persist in browser localStorage on this device. **Download CSV** a
 Location selection now confirms above the controls, announces the result, shows a brief top-of-screen confirmation on phones, and brings the selected coordinates into view. This applies to GPS, map picking and coordinate-bearing Maps links. Existing coordinates are labelled Current school location until replaced. Name and location are marked required; GPS guidance explains that you must be at the school, while Maps links and manual coordinates are alternatives. Missing names show an inline error; missing locations bring the relevant guidance into view. Selection still needs Save to persist.
 
 The map keeps Leaflet and the existing school markers, with a neutral vector style rendered in the browser. No geocoding, nearby-place lookup, API key or new school-data API is used. The basemap tile provider changes to [OpenFreeMap](https://openfreemap.org/quick_start/); Leaflet.VectorGrid is loaded from its pinned CDN release. Roads are retained without road/place labels; water and buildings provide orientation, while hospitals, shops, forests and other unrelated map features are hidden. The school data and CSV format are unchanged.
+
+## Sri Lanka map bounds and geographic labels — 1.2.2
+
+Map panning is constrained to the Sri Lanka area with solid drag bounds (5.85–9.95° N, 79.45–82.05° E), while preserving coastal access and zoom levels 7–18. Wider viewports may show surrounding sea/land; dragging cannot take the map away from the country.
+
+The map uses pale green land and building outlines, blue water, and green road lines. Sri Lanka and nine province labels use local overview anchors (label placements only). City and town names come from the existing OpenFreeMap place features; villages appear at closer zooms. Labels keep their readable screen size, avoid one another and remain below school markers. The same tile downloads supply the labels, with no added API, font service or library. POIs and forests remain hidden.

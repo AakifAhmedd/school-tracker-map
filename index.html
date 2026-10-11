@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="application-version" content="1.2.1" />
+    <meta name="application-version" content="1.2.2" />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin />
     <link rel="preconnect" href="https://unpkg.com" crossorigin />
-    <link rel="preload" href="rotary-wheel.svg?v=1.2.1" as="image" />
+    <link rel="preload" href="rotary-wheel.svg?v=1.2.2" as="image" />
     <title>SELB - Sharp Eyes Learn Better</title>
     <link rel="icon" type="image/png" href="https://brandcenter.rotary.org/dist/brandcenter/favicon-32x32.png?v=dcf63410fce77e4a51ba11a9b721bd3e"/>
     <link
@@ -289,7 +289,11 @@
       .field-error { color: #a72d36; font-size: 12px; line-height: 1.4; }
       input[aria-invalid="true"] { border-color: #a72d36 !important; }
       #locationReady:focus { outline: 2px solid var(--accent, #1d6b5c); outline-offset: 2px; }
-      #map { background: #f5f4ef; }
+      #map { background: #eef6e9; }
+      .map-place-label { white-space: nowrap; color: #315d56; text-shadow: -1px -1px 0 #f5fbef, 1px -1px 0 #f5fbef, -1px 1px 0 #f5fbef, 1px 1px 0 #f5fbef; font-size: 12px; font-weight: 500; pointer-events: none; text-align: center; overflow: hidden; text-overflow: ellipsis; }
+      .map-place-label.country { font-size: 15px; font-weight: 700; letter-spacing: 1px; }
+      .map-place-label.province { font-size: 11px; font-weight: 600; color: #567d63; }
+      .map-place-label.city { font-size: 13px; font-weight: 650; }
       #map .leaflet-tile path { vector-effect: non-scaling-stroke; }
       #mapNotice { position: absolute; top: 12px; right: 60px; z-index: 700; padding: 10px; background: white; border-radius: 8px; font-size: 12px; max-width: 230px; }
       .app[data-view="inputs"] #mapNotice { display: none; }
@@ -403,7 +407,7 @@
   <body>
     <header>
       <div style="display: flex; align-items: center; gap: 10px">
-        <h1>Sharp Eyes Learn Better<span>School Program Tracker <small class="version">v1.2.1</small></span></h1>
+        <h1>Sharp Eyes Learn Better<span>School Program Tracker <small class="version">v1.2.2</small></span></h1>
       </div>
       <div class="counts" id="counts"></div>
     </header>
@@ -561,11 +565,91 @@
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       /* ---------- Map setup ---------- */
-      const map = L.map("map", { zoomControl: false, minZoom: 7, maxZoom: 18 }).setView(
+      const SRI_LANKA_BOUNDS = [[5.85, 79.45], [9.95, 82.05]];
+      const map = L.map("map", {
+        zoomControl: false, minZoom: 7, maxZoom: 18,
+        maxBounds: SRI_LANKA_BOUNDS, maxBoundsViscosity: 1,
+      }).setView(
         [7.8731, 80.7718],
         8,
       );
       L.control.zoom({ position: "topright" }).addTo(map);
+      map.createPane("placeLabels");
+      map.getPane("placeLabels").style.zIndex = 450;
+      map.getPane("placeLabels").style.pointerEvents = "none";
+      const placeLabels = L.layerGroup().addTo(map);
+      const labelTiles = new Map();
+      let labelTimer;
+      // Province anchors are label placements, not school locations or boundary data.
+      const provinceLabels = [
+        ["Northern Province", 9.1, 80.35], ["North Central Province", 8.35, 80.7],
+        ["North Western Province", 7.75, 80.0], ["Central Province", 7.55, 80.9],
+        ["Eastern Province", 7.65, 81.45], ["Western Province", 6.9, 79.7],
+        ["Sabaragamuwa Province", 6.65, 80.5], ["Uva Province", 6.85, 81.15],
+        ["Southern Province", 6.1, 80.65],
+      ];
+      // Capture place points during the existing tile render; no second tile request.
+      const LabelTileRenderer = L.SVG.Tile.extend({
+        _addPath(layer) {
+          if (!layer.options.placeLabel) { L.SVG.Tile.prototype._addPath.call(this, layer); return; }
+          const coord = this.getCoord();
+          const position = L.point(coord.x * 256 + layer._point.x, coord.y * 256 + layer._point.y);
+          const point = {properties: layer.properties, latlng: map.unproject(position, coord.z)};
+          const container = this.getContainer();
+          (container.placePoints ||= []).push(point);
+        },
+      });
+      function schedulePlaceLabels() {
+        clearTimeout(labelTimer);
+        labelTimer = setTimeout(renderPlaceLabels, 60);
+      }
+      map.on("moveend zoomend resize", schedulePlaceLabels);
+      function renderPlaceLabels() {
+        const zoom = map.getZoom();
+        const candidates = [];
+        if (zoom <= 8) candidates.push({name: "Sri Lanka", kind: "country", priority: 0, latlng: L.latLng(8.85, 80.75)});
+        if (zoom <= 10) provinceLabels.forEach(([name, lat, lng]) => candidates.push({name, kind: "province", priority: 1, latlng: L.latLng(lat, lng)}));
+        for (const tile of labelTiles.values()) {
+          for (const point of tile.placePoints || []) {
+            const label = mapPlaceLabel(point.properties, zoom);
+            if (label && L.latLngBounds(SRI_LANKA_BOUNDS).contains(point.latlng)) candidates.push({...label, latlng: point.latlng});
+          }
+        }
+        candidates.sort((a, b) => a.priority - b.priority);
+        const placed = [], seen = new Set(), size = map.getSize();
+        placeLabels.clearLayers();
+        if (!size.x || !size.y) return;
+        const schoolBoxes = Object.values(markers).filter(({marker}) => map.hasLayer(marker)).map(({data}) => {
+          const point = map.latLngToContainerPoint([data.lat, data.lng]);
+          return {left: point.x - 17, right: point.x + 17, top: point.y - 17, bottom: point.y + 17};
+        });
+        schoolBoxes.push({left: size.x - 58, right: size.x, top: 0, bottom: 84});
+        schoolBoxes.push({left: 0, right: size.x, top: size.y - 36, bottom: size.y});
+        for (const label of candidates) {
+          const key = `${label.name}:${label.latlng.lat.toFixed(3)}:${label.latlng.lng.toFixed(3)}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          const position = map.latLngToContainerPoint(label.latlng);
+          const fontSize = label.kind === "country" ? 15 : label.kind === "city" ? 13 : label.kind === "province" ? 11 : 12;
+          const width = Math.min(size.x - 12, label.name.length * fontSize * .6 + 12);
+          if (position.x < 0 || position.x > size.x || position.y < 0 || position.y > size.y) continue;
+          let placement;
+          for (const [dx, dy] of [[0, 0], [0, -24], [0, 24], [-36, 0], [36, 0], [0, -48], [0, 48], [-72, 0], [72, 0]]) {
+            const x = Math.max(width / 2 + 6, Math.min(size.x - width / 2 - 6, position.x + dx));
+            const y = Math.max(14, Math.min(size.y - 14, position.y + dy));
+            const box = {left: x - width / 2, right: x + width / 2, top: y - 10, bottom: y + 10};
+            if (placed.concat(schoolBoxes).some(other => labelsOverlap(box, other))) continue;
+            placement = {point: L.point(x, y), box};
+            break;
+          }
+          if (!placement) continue;
+          placed.push(placement.box);
+          L.marker(map.containerPointToLatLng(placement.point), {
+            pane: "placeLabels", interactive: false, keyboard: false,
+            icon: L.divIcon({className: `map-place-label ${label.kind}`, html: escapeHtml(label.name), iconSize: [width, 20], iconAnchor: [width / 2, 10]}),
+          }).addTo(placeLabels);
+        }
+      }
       // Vector tiles let us omit POIs and landscape colouring instead of hiding roads.
       let tiles = null;
       let tilesLoading = false;
@@ -584,17 +668,30 @@
           const url = config.tiles?.[0];
           if (typeof url !== "string" || !url.startsWith("https://tiles.openfreemap.org/")) throw new Error("Invalid basemap configuration");
           tiles = L.vectorGrid.protobuf(url, {
-            rendererFactory: L.svg.tile,
+            rendererFactory: (coord, size, options) => new LabelTileRenderer(coord, size, options),
             vectorTileLayerStyles: plainMapStyles(),
             maxNativeZoom: Math.min(config.maxzoom || 14, 14), maxZoom: 18, minZoom: 7,
             interactive: false, updateWhenIdle: true, keepBuffer: 1,
             attribution: '<a href="https://openfreemap.org">OpenFreeMap</a> · © <a href="https://openmaptiles.org">OpenMapTiles</a> · © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
           });
+          tiles.on("tileload", event => {
+            const {x, y, z} = event.coords;
+            labelTiles.set(`${z}/${x}/${y}`, event.tile);
+            schedulePlaceLabels();
+          });
+          tiles.on("tileunload", event => {
+            const {x, y, z} = event.coords, key = `${z}/${x}/${y}`;
+            if (labelTiles.get(key) === event.tile) labelTiles.delete(key);
+            schedulePlaceLabels();
+          });
           tiles.addTo(map);
+          schedulePlaceLabels();
           mapNotice.hidden = true;
         } catch {
           if (tiles && map.hasLayer(tiles)) map.removeLayer(tiles);
           tiles = null;
+          labelTiles.clear();
+          schedulePlaceLabels();
           mapNotice.hidden = false;
         } finally {
           clearTimeout(timeout);
@@ -604,18 +701,30 @@
       document.getElementById("retryMap").onclick = startTiles;
       function plainMapStyles() {
         const visible = {
-          water: {fill: true, fillColor: "#dce9ed", fillOpacity: 1, stroke: false},
-          waterway: {color: "#c4dce3", weight: 1, opacity: 1},
-          building: (properties, zoom) => zoom < 14 ? [] : {fill: true, fillColor: "#e1e0dc", fillOpacity: .65, stroke: false},
+          place: properties => mapPlaceLabel(properties, 18) ? {radius: 0, stroke: false, fill: false, placeLabel: true} : [],
+          water: {fill: true, fillColor: "#cae8f4", fillOpacity: 1, stroke: false},
+          waterway: {color: "#9fcedf", weight: 1, opacity: 1},
+          building: (properties, zoom) => zoom < 14 ? [] : {fill: true, fillColor: "#cddfcb", fillOpacity: .65, stroke: false},
           transportation: (properties, zoom) => {
             const kind = properties.class;
             if (["path", "track", "service", "rail", "transit", "ferry"].includes(kind) && zoom < 15) return [];
             const major = ["motorway", "trunk", "primary", "secondary"].includes(kind);
-            return {color: major ? "#c5bdaa" : "#d2d0c9", weight: major ? (zoom >= 13 ? 3 : 1.8) : (zoom >= 14 ? 1.6 : .8), opacity: 1};
+            return {color: major ? "#91ac99" : "#b9ceba", weight: major ? (zoom >= 13 ? 3 : 1.8) : (zoom >= 14 ? 1.6 : .8), opacity: 1};
           },
         };
         // Unknown/new source layers stay invisible too; no baked-in labels or POIs.
         return new Proxy(visible, {get: (styles, layer) => Object.hasOwn(styles, layer) ? styles[layer] : []});
+      }
+
+      function mapPlaceLabel(properties, zoom) {
+        const kind = properties.class;
+        const minZoom = {city: 8, town: 10, village: 13};
+        const name = properties["name:en"] || properties.name_en || properties.name;
+        if (!Object.hasOwn(minZoom, kind) || zoom < minZoom[kind] || typeof name !== "string" || !name.trim()) return null;
+        return {name: name.trim().slice(0, 80), kind, priority: (kind === "city" ? 2 : kind === "town" ? 3 : 4) + Math.min(Number(properties.rank) || 20, 100) / 1000};
+      }
+      function labelsOverlap(a, b) {
+        return a.left < b.right + 6 && a.right + 6 > b.left && a.top < b.bottom + 6 && a.bottom + 6 > b.top;
       }
 
       let pickingLocation = false;
@@ -775,7 +884,7 @@
       function makeIcon(color) {
         if (!icons[color]) icons[color] = L.divIcon({
           className: "school-marker",
-          html: `<div style="background:${color}"><img src="rotary-wheel.svg?v=1.2.1" width="22" height="22" alt="" /></div>`,
+          html: `<div style="background:${color}"><img src="rotary-wheel.svg?v=1.2.2" width="22" height="22" alt="" /></div>`,
           iconSize: [30, 30],
           iconAnchor: [15, 15],
           popupAnchor: [0, -15],
@@ -874,6 +983,7 @@
           } else if (map.hasLayer(marker)) map.removeLayer(marker);
         });
         rebuildList();
+        schedulePlaceLabels();
       }
 
       function rebuildMap() {
@@ -965,7 +1075,8 @@
             pendingFit = false;
             showView("map");
             map.invalidateSize({pan: false});
-            map.flyTo([s.lat, s.lng], 12, { animate: !reducedMotion });
+            // A direct zoom respects solid bounds without an interrupted cross-country flight.
+            map.setView([s.lat, s.lng], 12, { animate: !reducedMotion });
             bySchool.get(s).openPopup();
           };
           item.querySelector(".location-edit").onclick = () => openSchoolForm(s);

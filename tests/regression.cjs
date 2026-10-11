@@ -72,11 +72,18 @@ for (const input of ['91,80', '7,181', 'not coordinates', 'https://evil.example/
 }
 // Basemap styling suppresses both known POIs and future layers, retaining useful roads.
 vm.runInContext(script.slice(script.indexOf('      function plainMapStyles'), script.indexOf('      let pickingLocation')), context);
-for (const layer of ['poi', 'landcover', 'landuse', 'park', 'transportation_name', 'place', 'future_extra_layer']) {
+for (const layer of ['poi', 'landcover', 'landuse', 'park', 'transportation_name', 'future_extra_layer']) {
   assert.equal(vm.runInContext(`plainMapStyles()["${layer}"].length`, context), 0);
 }
 assert.ok(vm.runInContext('plainMapStyles().transportation({class:"primary"}, 14).weight > 0', context));
 assert.ok(vm.runInContext('plainMapStyles().building({}, 15).fill', context));
+assert.equal(vm.runInContext('mapPlaceLabel({class:"city",name_en:"Colombo"},8).name', context), 'Colombo');
+assert.equal(vm.runInContext('mapPlaceLabel({class:"town",name:"Moratuwa"},9)', context), null);
+assert.equal(vm.runInContext('mapPlaceLabel({class:"town",name:"Moratuwa"},10).name', context), 'Moratuwa');
+assert.equal(vm.runInContext('mapPlaceLabel({class:"hospital",name:"Hospital"},18)', context), null);
+assert.equal(vm.runInContext('mapPlaceLabel({class:"city",name:""},18)', context), null);
+assert.equal(vm.runInContext('labelsOverlap({left:0,right:50,top:0,bottom:20},{left:45,right:95,top:5,bottom:25})', context), true);
+assert.equal(vm.runInContext('labelsOverlap({left:0,right:50,top:0,bottom:20},{left:80,right:130,top:0,bottom:20})', context), false);
 require('./location-flow.cjs');
 require('./device-saves.cjs');
 const version = fs.readFileSync(path.join(root, 'VERSION'), 'utf8').trim();

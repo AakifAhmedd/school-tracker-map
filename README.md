@@ -1,6 +1,6 @@
 # School Programme Tracker — Sri Lanka
 
-SELB (Sharp Eyes Learn Better) tracks schools through Not Started, Teacher Training, Vision Screening, and Completed. Current version: **1.2.3**.
+SELB (Sharp Eyes Learn Better) tracks schools through Not Started, Teacher Training, Vision Screening, and Completed. Current version: **1.2.4**.
 
 ## Live site
 The live GitHub Pages map is at
@@ -73,3 +73,7 @@ The map uses pale green land and building outlines, blue water, and green road l
 ## Softer main roads — 1.2.3
 
 Main road strokes are one-third thinner (1.2px in the overview, 2px at closer zooms), with a lighter green colour and slightly reduced opacity. This keeps the road network visible while giving school pins and geographic labels more prominence.
+
+## Project logo — 1.2.4
+
+The supplied SELB logo appears beside the project title, at 60px on desktop and 44px on phones. The original artwork is served locally as `selb-logo.png`, with explicit dimensions and a versioned asset URL.

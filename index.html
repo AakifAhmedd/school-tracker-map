@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="application-version" content="1.2.3" />
+    <meta name="application-version" content="1.2.4" />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin />
     <link rel="preconnect" href="https://unpkg.com" crossorigin />
-    <link rel="preload" href="rotary-wheel.svg?v=1.2.3" as="image" />
+    <link rel="preload" href="rotary-wheel.svg?v=1.2.4" as="image" />
     <title>SELB - Sharp Eyes Learn Better</title>
     <link rel="icon" type="image/png" href="https://brandcenter.rotary.org/dist/brandcenter/favicon-32x32.png?v=dcf63410fce77e4a51ba11a9b721bd3e"/>
     <link
@@ -60,6 +60,8 @@
         gap: 16px;
         flex-wrap: wrap;
       }
+      .project-brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+      .project-logo { width: 60px; height: 60px; object-fit: contain; flex: none; }
       header h1 {
         font-size: 17px;
         margin: 0;
@@ -319,6 +321,8 @@
       @media (max-width: 760px) {
         body { height: 100dvh; }
         header { padding: 12px 18px; flex: none; }
+        .project-brand { gap: 10px; }
+        .project-logo { width: 44px; height: 44px; }
         header h1 { font-size: 16px; }
         header h1 span { font-size: 12px; }
         header .counts { display: none; }
@@ -406,8 +410,9 @@
   </head>
   <body>
     <header>
-      <div style="display: flex; align-items: center; gap: 10px">
-        <h1>Sharp Eyes Learn Better<span>School Program Tracker <small class="version">v1.2.3</small></span></h1>
+      <div class="project-brand">
+        <img class="project-logo" src="selb-logo.png?v=1.2.4" width="60" height="60" alt="SELB project logo" decoding="async" />
+        <h1>Sharp Eyes Learn Better<span>School Program Tracker <small class="version">v1.2.4</small></span></h1>
       </div>
       <div class="counts" id="counts"></div>
     </header>
@@ -884,7 +889,7 @@
       function makeIcon(color) {
         if (!icons[color]) icons[color] = L.divIcon({
           className: "school-marker",
-          html: `<div style="background:${color}"><img src="rotary-wheel.svg?v=1.2.3" width="22" height="22" alt="" /></div>`,
+          html: `<div style="background:${color}"><img src="rotary-wheel.svg?v=1.2.4" width="22" height="22" alt="" /></div>`,
           iconSize: [30, 30],
           iconAnchor: [15, 15],
           popupAnchor: [0, -15],

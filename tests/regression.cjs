@@ -70,6 +70,13 @@ for (const input of ['91,80', '7,181', 'not coordinates', 'https://evil.example/
   context.input = input;
   assert.equal(vm.runInContext('locationFromText(input)', context), null);
 }
+// Basemap styling suppresses both known POIs and future layers, retaining useful roads.
+vm.runInContext(script.slice(script.indexOf('      function plainMapStyles'), script.indexOf('      let pickingLocation')), context);
+for (const layer of ['poi', 'landcover', 'landuse', 'park', 'transportation_name', 'place', 'future_extra_layer']) {
+  assert.equal(vm.runInContext(`plainMapStyles()["${layer}"].length`, context), 0);
+}
+assert.ok(vm.runInContext('plainMapStyles().transportation({class:"primary"}, 14).weight > 0', context));
+assert.ok(vm.runInContext('plainMapStyles().building({}, 15).fill', context));
 require('./location-flow.cjs');
 require('./device-saves.cjs');
 const version = fs.readFileSync(path.join(root, 'VERSION'), 'utf8').trim();

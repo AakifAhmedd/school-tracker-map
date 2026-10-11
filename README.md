@@ -1,6 +1,6 @@
 # School Programme Tracker — Sri Lanka
 
-SELB (Sharp Eyes Learn Better) tracks schools through Not Started, Teacher Training, Vision Screening, and Completed. Current version: **1.2.0**.
+SELB (Sharp Eyes Learn Better) tracks schools through Not Started, Teacher Training, Vision Screening, and Completed. Current version: **1.2.1**.
 
 ## Live site
 The live GitHub Pages map is at
@@ -28,13 +28,13 @@ Either run a local server (e.g. `python3 -m http.server` in this folder and visi
 
 All CSV schools appear in the list and stage totals. Only schools with valid coordinates appear on the map; the sidebar reports map coverage and labels schools awaiting coordinates. CSV export retains these schools, including blank coordinates. Unknown or blank stages display/export as `not_started`. No school data is changed automatically on GitHub.
 
-The map fits the school locations before attaching its tile layer, with a 1.5-second fallback when CSV loading is slow. Stage filters reuse markers; Rotary icons share one cached SVG asset. Tiles load after panning stops and keep a smaller buffer. Tile speed still depends on the existing OpenStreetMap HOT provider and the visitor's connection.
+The map fits the school locations before attaching its tile layer, with a 1.5-second fallback when CSV loading is slow. Stage filters reuse markers; Rotary icons share one cached SVG asset. Tiles load after panning stops and keep a smaller buffer. The plain basemap uses OpenFreeMap vector tiles and the pinned Leaflet.VectorGrid 1.3.0 renderer. Roads, water and subtle building footprints remain; POIs, labels and landscape shading are omitted. Tile speed depends on OpenFreeMap and the visitor's connection. A failed basemap configuration load offers Retry map while school pins remain available.
 
 Update data and Add a school are expandable panels. Saved add/edit/remove changes are retained on this device when browser storage is available; imported previews remain session-only until saved. Export the CSV and use the PR workflow to update the shared list. Keep `rotary-wheel.svg` beside `index.html` and `schools.csv`.
 
 ## Versioning and verification
 
-See [VERSIONING.md](VERSIONING.md). Run `node tests/regression.cjs` (Node 18+), then check desktop and phone layouts on a local HTTP server. The app itself needs no Node, build step, or new libraries.
+See [VERSIONING.md](VERSIONING.md). Run `node tests/regression.cjs` (Node 18+), then check desktop and phone layouts on a local HTTP server. The app itself needs no Node, build step, or a package installation.
 
 ## Coordinate research — 1.0.1
 
@@ -57,3 +57,9 @@ Current location runs only when requested and uses the browser’s permission pr
 Phones open on the **Schools** tab, which starts with **Add a new school**, search, and a list of schools needing locations. Switch to **All schools** to locate an already mapped school. Stage filters, deletion, import, stage editing, and notes editing are desktop tools. On a phone, the editor is a separate view with Back to schools, a school name, large GPS/map controls, Maps-link entry, a location-ready summary, optional manual coordinates, and Save location / Save school. Existing names, stages, and notes are preserved on mobile; new schools start at Not Started. Saving returns to the school list.
 
 Saved changes persist in browser localStorage on this device. **Download CSV** appears after saving for transfer to desktop and the existing GitHub update workflow; there is no automatic cross-device sync or GitHub write. If storage is blocked, the app clearly asks for a download before closing. If the published CSV changes, it loads the latest published data and offers the earlier saved copy as a separate download instead of overwriting newer school data. New session saves in that situation require a download as well. After reviewing/downloading saved copies, the desktop **Reset device changes** action clears device saves and returns to the published list, with confirmation. Browser storage clearing also clears device saves.
+
+## Location feedback and plain map — 1.2.1
+
+Location selection now confirms above the controls, announces the result, shows a brief top-of-screen confirmation on phones, and brings the selected coordinates into view. This applies to GPS, map picking and coordinate-bearing Maps links. Existing coordinates are labelled Current school location until replaced. Name and location are marked required; GPS guidance explains that you must be at the school, while Maps links and manual coordinates are alternatives. Missing names show an inline error; missing locations bring the relevant guidance into view. Selection still needs Save to persist.
+
+The map keeps Leaflet and the existing school markers, with a neutral vector style rendered in the browser. No geocoding, nearby-place lookup, API key or new school-data API is used. The basemap tile provider changes to [OpenFreeMap](https://openfreemap.org/quick_start/); Leaflet.VectorGrid is loaded from its pinned CDN release. Roads are retained without road/place labels; water and buildings provide orientation, while hospitals, shops, forests and other unrelated map features are hidden. The school data and CSV format are unchanged.

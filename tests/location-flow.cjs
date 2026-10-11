@@ -12,7 +12,7 @@ function element(id) {
     classList: {add() {}, remove() {}},
     setAttribute(k, v) { this.attrs[k] = v; },
     addEventListener(k, fn) { this.listeners[k] = fn; },
-    closest() { return element('details'); }, scrollIntoView() {}, focus() {},
+    closest() { return element('details'); }, scrollIntoView() { this.scrolled = true; }, focus() { this.focused = true; },
     reset() {
       for (const key of ['name', 'lat', 'lng', 'location', 'notes']) element('f_' + key).value = '';
       element('f_stage').value = 'screening';
@@ -63,6 +63,8 @@ gps[0].success({coords: {latitude: 8.1, longitude: 80.2, accuracy: 12}});
 assert.equal(element('f_lat').value, '8.100000');
 assert.match(element('locationStatus').textContent, /12 m/);
 assert.equal(element('locateBtn').disabled, false);
+assert.equal(element('locationReady').hidden, false);
+assert.equal(element('locationHeading').textContent, '✓ Location selected');
 element('addForm').listeners.submit({preventDefault() {}, target: element('addForm')});
 assert.equal(run('schools.length'), 2);
 for (const [code, message] of [[1, /denied/], [2, /unavailable/], [3, /timed out/]]) {
@@ -122,3 +124,22 @@ element('newSchoolBtn').onclick();
 element('backToSchools').onclick();
 assert.equal(element('sidebar').dataset.editor, 'closed');
 console.log('Passed: Maps links, edit without duplicates, local save, tabs, map picking, GPS success/errors and stale-response protection.');
+
+// Validation stays next to the missing field, and phone selection is brought into view.
+run('openSchoolForm()');
+element('addForm').listeners.submit({preventDefault() {}});
+assert.equal(element('nameError').hidden, false);
+assert.equal(element('f_name').attrs['aria-invalid'], 'true');
+assert.equal(element('f_name').focused, true);
+element('f_name').value = 'Capture school'; element('f_name').listeners.input();
+assert.equal(element('nameError').hidden, true);
+element('addForm').listeners.submit({preventDefault() {}});
+assert.equal(element('locationStatus').focused, true);
+element('pickBtn').onclick();
+mapEvents.click({latlng: {lat: 6.78, lng: 79.88}});
+assert.equal(element('locationReady').hidden, false);
+assert.equal(element('locationReady').focused, true);
+assert.equal(element('locationReady').scrolled, true);
+assert.equal(element('locationHeading').textContent, '✓ Location selected');
+assert.equal(run('schools.some(s => s.name === "Capture school")'), false);
+console.log('Passed: inline required-field errors and immediate phone selection feedback without saving.');

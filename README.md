@@ -1,6 +1,6 @@
 # School Programme Tracker — Sri Lanka
 
-SELB (Sharp Eyes Learn Better) tracks schools through Not Started, Teacher Training, Vision Screening, and Completed. Current version: **1.2.2**.
+SELB (Sharp Eyes Learn Better) tracks schools through Not Started, Teacher Training, Vision Screening, and Completed. Current version: **1.2.3**.
 
 ## Live site
 The live GitHub Pages map is at
@@ -69,3 +69,7 @@ The map keeps Leaflet and the existing school markers, with a neutral vector sty
 Map panning is constrained to the Sri Lanka area with solid drag bounds (5.85–9.95° N, 79.45–82.05° E), while preserving coastal access and zoom levels 7–18. Wider viewports may show surrounding sea/land; dragging cannot take the map away from the country.
 
 The map uses pale green land and building outlines, blue water, and green road lines. Sri Lanka and nine province labels use local overview anchors (label placements only). City and town names come from the existing OpenFreeMap place features; villages appear at closer zooms. Labels keep their readable screen size, avoid one another and remain below school markers. The same tile downloads supply the labels, with no added API, font service or library. POIs and forests remain hidden.
+
+## Softer main roads — 1.2.3
+
+Main road strokes are one-third thinner (1.2px in the overview, 2px at closer zooms), with a lighter green colour and slightly reduced opacity. This keeps the road network visible while giving school pins and geographic labels more prominence.
